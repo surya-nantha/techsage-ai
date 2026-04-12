@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════════
+   TechSage AI — High-Fidelity Claymorphism Design System
+   All tokens, shadows, animations, and global styles live here.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────────── */
+:root {
+  /* Canvas */
+  --clay-canvas:       #F4F1FA;
+  --clay-card-bg:      rgba(255, 255, 255, 0.72);
+
+  /* Text */
+  --clay-foreground:   #332F3A;
+  --clay-muted:        #635F69;
+
+  /* Accents */
+  --clay-accent:       #7C3AED;
+  --clay-accent-light: #A78BFA;
+  --clay-accent-alt:   #DB2777;
+  --clay-sky:          #0EA5E9;
+  --clay-emerald:      #10B981;
+  --clay-amber:        #F59E0B;
+
+  /* ── 4-Layer Shadow Stack ── */
+
+  /* Large containers / hero sections */
+  --shadow-clay-deep:
+    30px 30px 60px #cdc6d9,
+    -30px -30px 60px #ffffff,
+    inset 10px 10px 20px rgba(139, 92, 246, 0.05),
+    inset -10px -10px 20px rgba(255, 255, 255, 0.8);
+
+  /* Standard floating cards */
+  --shadow-clay-card:
+    16px 16px 32px rgba(160, 150, 180, 0.2),
+    -10px -10px 24px rgba(255, 255, 255, 0.9),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.03),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+
+  /* Elevated card (hover state) */
+  --shadow-clay-card-hover:
+    20px 20px 40px rgba(160, 150, 180, 0.28),
+    -12px -12px 28px rgba(255, 255, 255, 1),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.05),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+
+  /* Primary button */
+  --shadow-clay-button:
+    12px 12px 24px rgba(139, 92, 246, 0.30),
+    -8px -8px 16px rgba(255, 255, 255, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.10);
+
+  /* Button hover — lifted */
+  --shadow-clay-button-hover:
+    14px 14px 28px rgba(139, 92, 246, 0.40),
+    -10px -10px 20px rgba(255, 255, 255, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.5),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.08);
+
+  /* Input / recessed surface */
+  --shadow-clay-pressed:
+    inset 10px 10px 20px #d9d4e3,
+    inset -10px -10px 20px #ffffff;
+
+  /* ── Radii ── */
+  --radius-xl:   60px;
+  --radius-lg:   48px;
+  --radius-card: 32px;
+  --radius-md:   24px;
+  --radius-btn:  20px;
+  --radius-sm:   16px;
+}
+
+/* ── Reset & Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--clay-canvas);
+  color: var(--clay-foreground);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Animations ───────────────────────────────────────────────── */
+@keyframes clay-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes clay-float-delayed {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-15px) rotate(-2deg); }
+}
+
+@keyframes clay-float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-30px) rotate(5deg); }
+}
+
+@keyframes clay-breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.025); }
+}
+
+@keyframes clay-pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(192, 0, 0, 0.4), var(--shadow-clay-button); }
+  70%  { box-shadow: 0 0 0 18px rgba(192, 0, 0, 0), var(--shadow-clay-button); }
+  100% { box-shadow: 0 0 0 0 rgba(192, 0, 0, 0),   var(--shadow-clay-button); }
+}
+
+@keyframes dots {
+  0%, 80%, 100% { opacity: 0; transform: scale(0.6); }
+  40%            { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Animation utility classes ────────────────────────────────── */
+.clay-float         { animation: clay-float          8s  ease-in-out infinite; }
+.clay-float-delayed { animation: clay-float-delayed 10s  ease-in-out infinite; animation-delay: 2s; }
+.clay-float-slow    { animation: clay-float-slow    12s  ease-in-out infinite; animation-delay: 4s; }
+.clay-breathe       { animation: clay-breathe        6s  ease-in-out infinite; }
+
+/* ── Clay shadow utilities ────────────────────────────────────── */
+.shadow-clay-deep    { box-shadow: var(--shadow-clay-deep); }
+.shadow-clay-card    { box-shadow: var(--shadow-clay-card); }
+.shadow-clay-button  { box-shadow: var(--shadow-clay-button); }
+.shadow-clay-pressed { box-shadow: var(--shadow-clay-pressed); }
+
+/* ── Background blob layout ───────────────────────────────────── */
+.clay-blobs {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.clay-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+/* ── Reduced motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .clay-float,
+  .clay-float-delayed,
+  .clay-float-slow,
+  .clay-breathe { animation: none; }
+}

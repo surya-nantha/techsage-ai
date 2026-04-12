@@ -91,7 +91,8 @@ export default async function handler(req, res) {
         'X-Title': 'TechSage AI',       // shows in OpenRouter dashboard
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-sonnet-4',   // change to any OpenRouter model you like
+        // model: 'anthropic/claude-sonnet-4',   // change to any OpenRouter model you like
+        model: 'openai/gpt-oss-120b:free',   // change to any OpenRouter model you like
         max_tokens: 600,
         messages: [
           { role: 'system', content: systemPrompt },

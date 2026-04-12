@@ -1,30 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { C, SHADOWS, GRAD, FONT } from '../tokens.js'
 
 const STATES = {
   idle: {
-    bg: '#2E75B6',
-    border: '#1F4E79',
+    gradient: GRAD.primaryBtn,
     icon: '🎤',
     label: 'Tap to speak',
     pulse: false,
   },
   listening: {
-    bg: '#C00000',
-    border: '#7F0000',
+    gradient: 'linear-gradient(135deg, #F87171 0%, #C00000 100%)',
     icon: '⏹',
     label: 'Tap to stop',
     pulse: true,
   },
   processing: {
-    bg: '#7c3aed',
-    border: '#4c1d95',
-    icon: '⏳',
+    gradient: `linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%)`,
+    icon: '✨',
     label: 'Thinking...',
     pulse: false,
   },
   error: {
-    bg: '#d97706',
-    border: '#92400e',
+    gradient: 'linear-gradient(135deg, #FCD34D 0%, #D97706 100%)',
     icon: '🔁',
     label: 'Try again',
     pulse: false,
@@ -32,55 +29,68 @@ const STATES = {
 }
 
 export default function MicButton({ state = 'idle', onClick, fontSize = 18 }) {
+  const [pressed, setPressed] = useState(false)
   const s = STATES[state] || STATES.idle
-  const size = Math.max(88, fontSize * 5)
+  const size = Math.max(96, fontSize * 5.2)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
       <button
         onClick={onClick}
+        disabled={state === 'processing'}
         aria-label={s.label}
         aria-live="polite"
+        onMouseDown={() => setPressed(true)}
+        onMouseUp={() => setPressed(false)}
+        onMouseLeave={() => setPressed(false)}
+        onTouchStart={() => setPressed(true)}
+        onTouchEnd={() => setPressed(false)}
         style={{
           width: `${size}px`,
           height: `${size}px`,
           borderRadius: '50%',
-          background: s.bg,
-          border: `4px solid ${s.border}`,
+          background: s.gradient,
+          border: 'none',
           cursor: state === 'processing' ? 'not-allowed' : 'pointer',
-          fontSize: `${Math.round(size * 0.4)}px`,
+          fontSize: `${Math.round(size * 0.38)}px`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: s.pulse
-            ? `0 0 0 8px ${s.bg}33, 0 4px 16px rgba(0,0,0,0.2)`
-            : `0 4px 16px rgba(0,0,0,0.2)`,
-          transition: 'all 0.2s',
-          animation: s.pulse ? 'pulse 1.4s ease-in-out infinite' : 'none',
           outline: 'none',
+          boxShadow: SHADOWS.button,
+          animation: s.pulse
+            ? 'clay-pulse-ring 1.4s ease-in-out infinite'
+            : state === 'processing'
+            ? 'clay-breathe 2s ease-in-out infinite'
+            : 'none',
+          transform: pressed ? 'scale(0.90)' : 'scale(1)',
+          transition: 'transform 0.15s cubic-bezier(0.34,1.56,0.64,1)',
         }}
-        disabled={state === 'processing'}
       >
-        <span role="img" aria-hidden="true">{s.icon}</span>
+        {state === 'processing' ? (
+          <span style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+            {[0,1,2].map(i => (
+              <span key={i} style={{
+                width: '10px', height: '10px', borderRadius: '50%',
+                background: '#fff',
+                animation: `dots 1.2s ease-in-out ${i * 0.2}s infinite`,
+                display: 'inline-block',
+              }} />
+            ))}
+          </span>
+        ) : (
+          <span role="img" aria-hidden="true">{s.icon}</span>
+        )}
       </button>
-
-      <span
-        style={{
-          fontSize: `${Math.round(fontSize * 0.85)}px`,
-          fontWeight: '700',
-          color: s.bg,
-          letterSpacing: '0.3px',
-        }}
-      >
+      <span style={{
+        fontFamily: FONT.heading,
+        fontSize: `${Math.round(fontSize * 0.82)}px`,
+        fontWeight: '800',
+        color: C.accent,
+        letterSpacing: '0.4px',
+      }}>
         {s.label}
       </span>
-
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { box-shadow: 0 0 0 0 ${STATES.listening.bg}55, 0 4px 16px rgba(0,0,0,0.2); }
-          50% { box-shadow: 0 0 0 16px ${STATES.listening.bg}11, 0 4px 16px rgba(0,0,0,0.2); }
-        }
-      `}</style>
     </div>
   )
 }

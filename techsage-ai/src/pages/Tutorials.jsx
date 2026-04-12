@@ -1,193 +1,357 @@
 import React, { useState } from 'react'
-import Card from '../components/Card.jsx'
+import ClayCard from '../components/Card.jsx'
+import ClayButton from '../components/ClayButton.jsx'
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis.js'
 import { useSettings } from '../App.jsx'
+import { C, SHADOWS, RADIUS, FONT, GRAD } from '../tokens.js'
 import tutorials from '../data/tutorials.json'
 
-const DIFFICULTY_COLORS = {
-  Beginner: { bg: '#f0fdf4', color: '#15803d', border: '#86efac' },
-  Intermediate: { bg: '#fffbeb', color: '#b45309', border: '#fcd34d' },
+// Each tutorial gets a distinct icon gradient so the grid feels like a candy-store shelf
+const CARD_GRADIENTS = [
+  GRAD.iconBlue,
+  GRAD.iconPurple,
+  GRAD.iconPink,
+  GRAD.iconGreen,
+  GRAD.iconAmber,
+  GRAD.iconSky,
+]
+
+const CARD_BG_TINTS = [
+  'linear-gradient(135deg, rgba(219,234,254,0.45) 0%, rgba(255,255,255,0.72) 60%)',
+  'linear-gradient(135deg, rgba(237,233,254,0.45) 0%, rgba(255,255,255,0.72) 60%)',
+  'linear-gradient(135deg, rgba(252,231,243,0.45) 0%, rgba(255,255,255,0.72) 60%)',
+  'linear-gradient(135deg, rgba(209,250,229,0.45) 0%, rgba(255,255,255,0.72) 60%)',
+  'linear-gradient(135deg, rgba(254,243,199,0.45) 0%, rgba(255,255,255,0.72) 60%)',
+  'linear-gradient(135deg, rgba(224,242,254,0.45) 0%, rgba(255,255,255,0.72) 60%)',
+]
+
+const DIFFICULTY_CONFIG = {
+  Beginner:     { bg: 'linear-gradient(135deg, #34D399, #059669)', label: '🌱 Beginner' },
+  Intermediate: { bg: 'linear-gradient(135deg, #FCD34D, #D97706)', label: '⚡ Intermediate' },
 }
 
-function TutorialViewer({ tutorial, onBack }) {
+// ─── Tutorial step viewer ─────────────────────────────────────────
+function TutorialViewer({ tutorial, colorIdx, onBack }) {
   const { fontSize, language } = useSettings()
   const { speak, stop, isSpeaking } = useSpeechSynthesis()
   const [step, setStep] = useState(0)
   const current = tutorial.steps[step]
-  const total = tutorial.steps.length
+  const total   = tutorial.steps.length
+  const grad    = CARD_GRADIENTS[colorIdx % CARD_GRADIENTS.length]
 
-  const handleNext = () => { stop(); setStep(s => Math.min(s + 1, total - 1)) }
-  const handlePrev = () => { stop(); setStep(s => Math.max(s - 1, 0)) }
+  const goTo = (i) => { stop(); setStep(i) }
+  const prev = () => goTo(Math.max(step - 1, 0))
+  const next = () => { stop(); step < total - 1 ? setStep(step + 1) : onBack() }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      {/* Back button */}
-      <button
-        onClick={() => { stop(); onBack() }}
-        style={{
-          background: 'transparent', border: '2px solid #d1d5db',
-          borderRadius: '10px', padding: '10px 18px',
-          fontSize: `${fontSize - 2}px`, color: '#374151',
-          cursor: 'pointer', fontWeight: '600',
-          alignSelf: 'flex-start',
-          display: 'flex', alignItems: 'center', gap: '6px',
-        }}
-      >
-        ← Back to tutorials
-      </button>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-      {/* Tutorial title */}
-      <Card accent="#2E75B6">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <span style={{ fontSize: '40px' }}>{tutorial.icon}</span>
+      {/* Back */}
+      <ClayButton variant="ghost" size="sm" onClick={() => { stop(); onBack() }}>
+        ← Back to tutorials
+      </ClayButton>
+
+      {/* Tutorial identity card */}
+      <ClayCard style={{ background: CARD_BG_TINTS[colorIdx % CARD_BG_TINTS.length] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div style={{
+            width: '70px', height: '70px', borderRadius: '50%',
+            background: grad, flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '34px', boxShadow: SHADOWS.button,
+            animation: 'clay-breathe 5s ease-in-out infinite',
+          }}>
+            {tutorial.icon}
+          </div>
           <div>
-            <p style={{ fontSize: `${fontSize + 2}px`, fontWeight: '800', color: '#1F4E79' }}>{tutorial.title}</p>
-            <p style={{ fontSize: `${fontSize - 3}px`, color: '#6b7280' }}>{tutorial.description}</p>
+            <p style={{
+              fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`,
+              fontWeight: '900', color: C.foreground, marginBottom: '6px', lineHeight: 1.2,
+            }}>
+              {tutorial.title}
+            </p>
+            <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, lineHeight: 1.6 }}>
+              {tutorial.description}
+            </p>
           </div>
         </div>
-      </Card>
+      </ClayCard>
 
-      {/* Step dots */}
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
-        {tutorial.steps.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => { stop(); setStep(i) }}
-            aria-label={`Go to step ${i + 1}`}
-            style={{
-              width: '36px', height: '36px', borderRadius: '50%',
-              background: i === step ? '#1F4E79' : i < step ? '#93c5fd' : '#e5e7eb',
-              border: 'none', cursor: 'pointer',
-              fontSize: '13px', fontWeight: '700',
-              color: i === step ? '#fff' : i < step ? '#1e40af' : '#9ca3af',
-            }}
-          >
-            {i + 1}
-          </button>
-        ))}
+      {/* Step dot navigation */}
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+        {tutorial.steps.map((_, i) => {
+          const isDone    = i < step
+          const isCurrent = i === step
+          return (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              aria-label={`Step ${i + 1}`}
+              style={{
+                width: isCurrent ? '44px' : '36px',
+                height: '36px',
+                borderRadius: RADIUS.full,
+                background: isCurrent
+                  ? grad
+                  : isDone
+                  ? 'linear-gradient(135deg, #A7F3D0, #059669)'
+                  : '#EFEBF5',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: FONT.heading,
+                fontSize: '14px',
+                fontWeight: '800',
+                color: isCurrent || isDone ? '#fff' : C.muted,
+                boxShadow: isCurrent ? SHADOWS.button : SHADOWS.pressed,
+                transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+              }}
+            >
+              {isDone ? '✓' : i + 1}
+            </button>
+          )
+        })}
       </div>
 
-      {/* Current step */}
-      <Card>
-        <p style={{ fontSize: `${fontSize - 3}px`, fontWeight: '700', color: '#9ca3af', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          Step {step + 1} of {total}
-        </p>
-        <p style={{ fontSize: `${fontSize + 2}px`, fontWeight: '800', color: '#1F4E79', marginBottom: '16px' }}>
+      {/* Current step content */}
+      <ClayCard>
+        {/* Step counter badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
+          <div style={{
+            background: grad, borderRadius: RADIUS.sm,
+            padding: '6px 16px', boxShadow: SHADOWS.button,
+          }}>
+            <span style={{
+              fontFamily: FONT.heading, fontSize: `${fontSize - 3}px`,
+              fontWeight: '900', color: '#fff', letterSpacing: '0.5px',
+            }}>
+              Step {step + 1} of {total}
+            </span>
+          </div>
+          {/* Read-aloud toggle */}
+          <button
+            onClick={() => isSpeaking
+              ? stop()
+              : speak(`Step ${step + 1}. ${current.title}. ${current.description}`, language)
+            }
+            style={{
+              background: `${C.accent}12`,
+              border: `1.5px solid ${C.accent}30`,
+              borderRadius: RADIUS.btn,
+              padding: '6px 16px',
+              fontSize: `${fontSize - 4}px`,
+              color: C.accent,
+              cursor: 'pointer',
+              fontFamily: FONT.heading,
+              fontWeight: '700',
+              display: 'flex', alignItems: 'center', gap: '6px',
+            }}
+          >
+            {isSpeaking ? '⏹ Stop' : '🔊 Read aloud'}
+          </button>
+        </div>
+
+        {/* Step title */}
+        <p style={{
+          fontFamily: FONT.heading,
+          fontSize: `${fontSize + 4}px`,
+          fontWeight: '900',
+          color: C.foreground,
+          marginBottom: '16px',
+          lineHeight: 1.2,
+        }}>
           {current.title}
         </p>
-        <p style={{ fontSize: `${fontSize}px`, color: '#1f2937', lineHeight: 1.9, marginBottom: '20px' }}>
-          {current.description}
-        </p>
 
-        {/* TTS */}
-        <button
-          onClick={() => isSpeaking ? stop() : speak(`Step ${step + 1}. ${current.title}. ${current.description}`, language)}
-          style={{
-            background: '#f0f7ff', border: '1.5px solid #bfdbfe',
-            borderRadius: '10px', padding: '10px 18px',
-            fontSize: `${fontSize - 3}px`, color: '#1e40af',
-            cursor: 'pointer', fontWeight: '600',
-          }}
-        >
-          {isSpeaking ? '⏹ Stop reading' : '🔊 Read this step aloud'}
-        </button>
-      </Card>
+        {/* Step description — large, generous line height for seniors */}
+        <div style={{
+          background: '#EFEBF5',
+          borderRadius: RADIUS.md,
+          padding: '20px 22px',
+          boxShadow: SHADOWS.pressed,
+          marginBottom: '24px',
+        }}>
+          <p style={{
+            fontSize: `${fontSize + 1}px`,
+            color: C.foreground,
+            lineHeight: 1.9,
+            fontWeight: '500',
+          }}>
+            {current.description}
+          </p>
+        </div>
 
-      {/* Navigation */}
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <button
-          onClick={handlePrev}
-          disabled={step === 0}
-          style={{
-            flex: 1, padding: '18px',
-            background: step === 0 ? '#f3f4f6' : '#f0f7ff',
-            border: `2px solid ${step === 0 ? '#e5e7eb' : '#bfdbfe'}`,
-            borderRadius: '14px', fontSize: `${fontSize}px`,
-            color: step === 0 ? '#9ca3af' : '#1e40af',
-            fontWeight: '700', cursor: step === 0 ? 'default' : 'pointer',
-          }}
-        >
-          ← Previous
-        </button>
-        {step < total - 1 ? (
-          <button
-            onClick={handleNext}
-            style={{
-              flex: 1, padding: '18px',
-              background: '#1F4E79', border: 'none',
-              borderRadius: '14px', fontSize: `${fontSize}px`,
-              color: '#fff', fontWeight: '700', cursor: 'pointer',
-            }}
+        {/* Nav buttons */}
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <ClayButton
+            variant={step === 0 ? 'ghost' : 'secondary'}
+            size="lg"
+            onClick={prev}
+            disabled={step === 0}
+            style={{ flex: 1 }}
           >
-            Next step →
-          </button>
-        ) : (
-          <button
-            onClick={() => { stop(); onBack() }}
-            style={{
-              flex: 1, padding: '18px',
-              background: '#16a34a', border: 'none',
-              borderRadius: '14px', fontSize: `${fontSize}px`,
-              color: '#fff', fontWeight: '700', cursor: 'pointer',
-            }}
-          >
-            ✅ Finished!
-          </button>
-        )}
-      </div>
+            ← Previous
+          </ClayButton>
+
+          {step < total - 1 ? (
+            <ClayButton size="lg" onClick={next} style={{ flex: 2 }}>
+              Next step →
+            </ClayButton>
+          ) : (
+            <ClayButton variant="success" size="lg" onClick={next} style={{ flex: 2 }}>
+              ✅ Finished!
+            </ClayButton>
+          )}
+        </div>
+      </ClayCard>
+
+      {/* Tip: swipe between steps on mobile */}
+      <p style={{
+        textAlign: 'center',
+        fontSize: `${fontSize - 5}px`,
+        color: C.muted,
+        fontFamily: FONT.heading,
+        fontWeight: '600',
+      }}>
+        Tap the numbered circles above to jump to any step
+      </p>
     </div>
   )
 }
 
+// ─── Tutorials grid ───────────────────────────────────────────────
 export default function Tutorials() {
   const { fontSize, language } = useSettings()
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected]   = useState(null)
+  const [colorIdx, setColorIdx]   = useState(0)
+  const [hoveredIdx, setHoveredIdx] = useState(null)
 
-  if (selected) {
-    return <TutorialViewer tutorial={selected} onBack={() => setSelected(null)} />
+  if (selected !== null) {
+    return (
+      <TutorialViewer
+        tutorial={tutorials[selected]}
+        colorIdx={colorIdx}
+        onBack={() => setSelected(null)}
+      />
+    )
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <Card accent="#7c3aed">
-        <p style={{ fontSize: `${fontSize + 2}px`, fontWeight: '800', color: '#4c1d95', marginBottom: '6px' }}>
-          📚 {language === 'en' ? 'Step-by-Step Tutorials' : 'படிப்படியான பாடங்கள்'}
-        </p>
-        <p style={{ fontSize: `${fontSize - 1}px`, color: '#374151', lineHeight: 1.7 }}>
-          {language === 'en'
-            ? 'Pick any topic below to learn at your own pace. Each tutorial walks you through every step with clear, simple instructions.'
-            : 'கீழே உள்ள எந்த தலைப்பையும் தேர்ந்தெடுங்கள். ஒவ்வொரு படியிலும் தெளிவான வழிமுறைகள் இருக்கும்.'}
-        </p>
-      </Card>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '14px' }}>
-        {tutorials.map(t => {
-          const diff = DIFFICULTY_COLORS[t.difficulty] || DIFFICULTY_COLORS.Beginner
+      {/* Header */}
+      <ClayCard style={{ background: 'linear-gradient(135deg, rgba(237,233,254,0.5) 0%, rgba(255,255,255,0.72) 60%)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div style={{
+            width: '64px', height: '64px', borderRadius: '50%',
+            background: GRAD.primaryBtn, flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '30px', boxShadow: SHADOWS.button,
+            animation: 'clay-breathe 5s ease-in-out infinite',
+          }}>📚</div>
+          <div>
+            <p style={{
+              fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`,
+              fontWeight: '900', color: C.accent, marginBottom: '6px',
+            }}>
+              {language === 'en' ? 'Step-by-Step Tutorials' : 'படிப்படியான பாடங்கள்'}
+            </p>
+            <p style={{ fontSize: `${fontSize - 1}px`, color: C.muted, lineHeight: 1.7 }}>
+              {language === 'en'
+                ? 'Pick any topic and learn at your own pace. Each tutorial walks you through every step with clear, simple instructions.'
+                : 'எந்த தலைப்பையும் தேர்ந்தெடுங்கள். ஒவ்வொரு படியிலும் தெளிவான வழிமுறைகள் இருக்கும்.'}
+            </p>
+          </div>
+        </div>
+      </ClayCard>
+
+      {/* Tutorial cards grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+        gap: '18px',
+      }}>
+        {tutorials.map((t, i) => {
+          const grad    = CARD_GRADIENTS[i % CARD_GRADIENTS.length]
+          const bg      = CARD_BG_TINTS[i % CARD_BG_TINTS.length]
+          const diff    = DIFFICULTY_CONFIG[t.difficulty] || DIFFICULTY_CONFIG.Beginner
+          const hovered = hoveredIdx === i
+
           return (
             <button
               key={t.id}
-              onClick={() => setSelected(t)}
+              onClick={() => { setSelected(i); setColorIdx(i) }}
+              onMouseEnter={() => setHoveredIdx(i)}
+              onMouseLeave={() => setHoveredIdx(null)}
               style={{
-                background: '#fff', border: '2px solid #e5e7eb',
-                borderRadius: '16px', padding: '20px',
-                cursor: 'pointer', textAlign: 'left',
-                display: 'flex', flexDirection: 'column', gap: '10px',
-                transition: 'all 0.15s', boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                background: hovered ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.72)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                borderRadius: RADIUS.card,
+                padding: '24px',
+                border: `1.5px solid ${hovered ? C.accent + '35' : C.accent + '15'}`,
+                cursor: 'pointer',
+                textAlign: 'left',
+                display: 'flex', flexDirection: 'column', gap: '14px',
+                boxShadow: hovered ? SHADOWS.cardHover : SHADOWS.card,
+                transform: hovered ? 'translateY(-8px)' : 'translateY(0)',
+                transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#2E75B6'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)' }}
             >
-              <span style={{ fontSize: '36px' }}>{t.icon}</span>
-              <p style={{ fontSize: `${fontSize}px`, fontWeight: '700', color: '#1f2937' }}>{t.title}</p>
-              <p style={{ fontSize: `${fontSize - 4}px`, color: '#6b7280', lineHeight: 1.5 }}>{t.description}</p>
+              {/* Icon orb */}
+              <div style={{
+                width: '60px', height: '60px', borderRadius: '50%',
+                background: grad,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '28px',
+                boxShadow: hovered ? SHADOWS.button : SHADOWS.card,
+                transition: 'all 0.3s',
+                transform: hovered ? 'scale(1.10)' : 'scale(1)',
+                animation: hovered ? 'clay-breathe 3s ease-in-out infinite' : 'none',
+              }}>
+                {t.icon}
+              </div>
+
+              {/* Title */}
+              <p style={{
+                fontFamily: FONT.heading,
+                fontSize: `${fontSize + 1}px`,
+                fontWeight: '900',
+                color: C.foreground,
+                lineHeight: 1.2,
+              }}>
+                {t.title}
+              </p>
+
+              {/* Description */}
+              <p style={{
+                fontSize: `${fontSize - 4}px`,
+                color: C.muted,
+                lineHeight: 1.6,
+                flex: 1,
+              }}>
+                {t.description}
+              </p>
+
+              {/* Footer row: difficulty badge + step count */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{
-                  background: diff.bg, color: diff.color, border: `1px solid ${diff.border}`,
-                  borderRadius: '6px', padding: '4px 10px', fontSize: `${fontSize - 5}px`, fontWeight: '700',
+                  background: diff.bg,
+                  borderRadius: RADIUS.full,
+                  padding: '5px 14px',
+                  fontSize: `${fontSize - 5}px`,
+                  fontFamily: FONT.heading,
+                  fontWeight: '800',
+                  color: '#fff',
+                  boxShadow: SHADOWS.button,
                 }}>
-                  {t.difficulty}
+                  {diff.label}
                 </span>
-                <span style={{ fontSize: `${fontSize - 5}px`, color: '#9ca3af' }}>
+                <span style={{
+                  fontSize: `${fontSize - 5}px`,
+                  color: C.muted,
+                  fontFamily: FONT.heading,
+                  fontWeight: '700',
+                }}>
                   {t.steps.length} steps →
                 </span>
               </div>
@@ -195,6 +359,27 @@ export default function Tutorials() {
           )
         })}
       </div>
+
+      {/* Bottom encouragement */}
+      <ClayCard padding="20px" style={{
+        background: 'linear-gradient(135deg, rgba(167,139,250,0.12) 0%, rgba(219,39,119,0.06) 100%)',
+        textAlign: 'center',
+      }}>
+        <p style={{
+          fontFamily: FONT.heading,
+          fontSize: `${fontSize}px`,
+          fontWeight: '800',
+          color: C.accent,
+          marginBottom: '6px',
+        }}>
+          🌟 {language === 'en' ? 'Take your time — there\'s no rush!' : 'அவசரப்படாதீர்கள்!'}
+        </p>
+        <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, lineHeight: 1.7 }}>
+          {language === 'en'
+            ? 'Each tutorial is here whenever you need it. You can go through any step as many times as you like.'
+            : 'ஒவ்வொரு பாடத்தையும் எத்தனை முறை வேண்டுமானாலும் படிக்கலாம்.'}
+        </p>
+      </ClayCard>
     </div>
   )
 }

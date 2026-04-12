@@ -1,33 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react'
 import MicButton from '../components/MicButton.jsx'
-import Card from '../components/Card.jsx'
+import ClayCard from '../components/Card.jsx'
+import ClayButton from '../components/ClayButton.jsx'
+import ClayInput from '../components/ClayInput.jsx'
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition.js'
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis.js'
 import { useClaudeAPI } from '../hooks/useClaudeAPI.js'
 import { useSettings } from '../App.jsx'
+import { C, SHADOWS, RADIUS, FONT, GRAD } from '../tokens.js'
 
 const QUICK_QUESTIONS = {
   en: [
-    'How do I send an email?',
-    'How do I make a video call?',
-    'What is a password and how do I make a strong one?',
-    'How do I connect to Wi-Fi?',
-    'What is ChatGPT and how do I use it?',
-    'How do I share a photo with family?',
+    { icon: '📧', text: 'How do I send an email?' },
+    { icon: '📹', text: 'How do I make a video call?' },
+    { icon: '🔐', text: 'How do I make a strong password?' },
+    { icon: '📶', text: 'How do I connect to Wi-Fi?' },
+    { icon: '🤖', text: 'What is ChatGPT and how do I use it?' },
+    { icon: '📷', text: 'How do I share a photo with family?' },
   ],
   ta: [
-    'மின்னஞ்சல் எப்படி அனுப்புவது?',
-    'வீடியோ அழைப்பு எப்படி செய்வது?',
-    'வலுவான கடவுச்சொல் என்ன?',
-    'Wi-Fi எப்படி இணைப்பது?',
-    'ChatGPT என்னவென்று சொல்லுங்கள்',
-    'புகைப்படம் குடும்பத்திற்கு அனுப்புவது எப்படி?',
+    { icon: '📧', text: 'மின்னஞ்சல் எப்படி அனுப்புவது?' },
+    { icon: '📹', text: 'வீடியோ அழைப்பு எப்படி செய்வது?' },
+    { icon: '🔐', text: 'வலுவான கடவுச்சொல் என்ன?' },
+    { icon: '📶', text: 'Wi-Fi எப்படி இணைப்பது?' },
+    { icon: '🤖', text: 'ChatGPT என்னவென்று சொல்லுங்கள்' },
+    { icon: '📷', text: 'புகைப்படம் குடும்பத்திற்கு அனுப்புவது எப்படி?' },
   ],
 }
 
+const ICON_GRADS = [GRAD.iconBlue, GRAD.iconPurple, GRAD.iconPink, GRAD.iconGreen, GRAD.iconAmber, GRAD.iconSky]
+
 export default function HomePage() {
   const { fontSize, language } = useSettings()
-  const [micState, setMicState] = useState('idle') // idle | listening | processing | error
+  const [micState, setMicState] = useState('idle')
   const [conversation, setConversation] = useState([])
   const { transcript, setTranscript, isListening, isSupported, error: micError, start, stop, reset: resetMic } = useSpeechRecognition(language)
   const { speak, stop: stopSpeak, isSpeaking } = useSpeechSynthesis()
@@ -36,7 +41,6 @@ export default function HomePage() {
   const inputRef = useRef(null)
   const [inputText, setInputText] = useState('')
 
-  // Sync mic state
   useEffect(() => {
     if (isListening) setMicState('listening')
     else if (loading) setMicState('processing')
@@ -44,38 +48,19 @@ export default function HomePage() {
     else setMicState('idle')
   }, [isListening, loading, micError])
 
-  // Auto-fill text field with transcript
-  useEffect(() => {
-    if (transcript) setInputText(transcript)
-  }, [transcript])
-
-  // Scroll to latest message
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [conversation])
+  useEffect(() => { if (transcript) setInputText(transcript) }, [transcript])
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [conversation])
 
   const handleMicClick = () => {
-    if (isListening) {
-      stop()
-    } else {
-      stopSpeak()
-      resetMic()
-      setInputText('')
-      start()
-    }
+    if (isListening) { stop() }
+    else { stopSpeak(); resetMic(); setInputText(''); start() }
   }
 
   const handleSubmit = async (text) => {
     const q = (text || inputText).trim()
     if (!q) return
-    stopSpeak()
-    setInputText('')
-    resetMic()
-
-    // Add user message
+    stopSpeak(); setInputText(''); resetMic()
     setConversation(prev => [...prev, { role: 'user', text: q }])
-
-    // Call API
     const data = await sendMessage(q, 'assistant', language)
     if (data?.reply) {
       setConversation(prev => [...prev, { role: 'assistant', text: data.reply }])
@@ -83,58 +68,65 @@ export default function HomePage() {
     }
   }
 
-  const handleQuickQuestion = (q) => {
-    setInputText(q)
-    handleSubmit(q)
-  }
-
   const questions = QUICK_QUESTIONS[language] || QUICK_QUESTIONS.en
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-      {/* Welcome banner */}
+      {/* ── Welcome banner ───────────────────────────────────── */}
       {conversation.length === 0 && (
-        <Card accent="#2E75B6">
-          <p style={{ fontSize: `${fontSize + 2}px`, fontWeight: '700', color: '#1F4E79', marginBottom: '6px' }}>
-            {language === 'en' ? '👋 Welcome to TechSage AI!' : '👋 TechSage AI-க்கு வரவேற்கிறோம்!'}
-          </p>
-          <p style={{ fontSize: `${fontSize - 1}px`, color: '#374151', lineHeight: 1.7 }}>
-            {language === 'en'
-              ? 'Ask me anything about technology — no question is too simple! You can speak or type your question.'
-              : 'தொழில்நுட்பம் பற்றி எதை வேண்டுமானாலும் கேளுங்கள் — எந்த கேள்வியும் எளிமையானதல்ல! பேசவும் அல்லது தட்டச்சு செய்யவும்.'}
-          </p>
-        </Card>
+        <ClayCard style={{ background: `linear-gradient(135deg, rgba(167,139,250,0.18) 0%, rgba(255,255,255,0.72) 60%)` }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+            <div style={{
+              width: '56px', height: '56px', borderRadius: '50%',
+              background: GRAD.primaryBtn,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '28px', flexShrink: 0,
+              boxShadow: SHADOWS.button,
+              animation: 'clay-breathe 5s ease-in-out infinite',
+            }}>🤖</div>
+            <div>
+              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`, fontWeight: '900', color: C.accent, marginBottom: '8px', lineHeight: 1.2 }}>
+                {language === 'en' ? '👋 Welcome to TechSage AI!' : '👋 TechSage AI-க்கு வரவேற்கிறோம்!'}
+              </p>
+              <p style={{ fontSize: `${fontSize - 1}px`, color: C.muted, lineHeight: 1.75 }}>
+                {language === 'en'
+                  ? 'Ask me anything about technology — no question is too simple! Speak using the microphone or type below.'
+                  : 'தொழில்நுட்பம் பற்றி எதை வேண்டுமானாலும் கேளுங்கள். பேசவும் அல்லது தட்டச்சு செய்யவும்.'}
+              </p>
+            </div>
+          </div>
+        </ClayCard>
       )}
 
-      {/* Conversation history */}
+      {/* ── Conversation ─────────────────────────────────────── */}
       {conversation.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {conversation.map((msg, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              }}
-            >
-              <div
-                style={{
-                  maxWidth: '85%',
-                  background: msg.role === 'user' ? '#2E75B6' : '#ffffff',
-                  color: msg.role === 'user' ? '#ffffff' : '#1f2937',
-                  borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                  padding: '14px 18px',
-                  fontSize: `${fontSize - 1}px`,
-                  lineHeight: 1.7,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
+            <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+              <div style={{
+                maxWidth: '85%',
+                background: msg.role === 'user'
+                  ? GRAD.primaryBtn
+                  : 'rgba(255,255,255,0.82)',
+                color: msg.role === 'user' ? '#fff' : C.foreground,
+                borderRadius: msg.role === 'user' ? `${RADIUS.card} ${RADIUS.card} ${RADIUS.sm} ${RADIUS.card}` : `${RADIUS.card} ${RADIUS.card} ${RADIUS.card} ${RADIUS.sm}`,
+                padding: '16px 20px',
+                fontSize: `${fontSize - 1}px`,
+                lineHeight: 1.75,
+                boxShadow: SHADOWS.card,
+                backdropFilter: 'blur(12px)',
+                whiteSpace: 'pre-wrap',
+              }}>
                 {msg.role === 'assistant' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '16px' }}>🤖</span>
-                    <span style={{ fontSize: `${fontSize - 4}px`, fontWeight: '700', color: '#1F4E79' }}>TechSage</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                    <div style={{
+                      width: '28px', height: '28px', borderRadius: '50%',
+                      background: GRAD.primaryBtn,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '14px', boxShadow: SHADOWS.button,
+                    }}>🤖</div>
+                    <span style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 3}px`, fontWeight: '800', color: C.accent }}>TechSage</span>
                   </div>
                 )}
                 {msg.text}
@@ -142,15 +134,17 @@ export default function HomePage() {
                   <button
                     onClick={() => isSpeaking ? stopSpeak() : speak(msg.text, language)}
                     style={{
-                      display: 'block',
-                      marginTop: '10px',
-                      background: 'transparent',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '8px',
-                      padding: '6px 12px',
+                      display: 'flex', alignItems: 'center', gap: '6px',
+                      marginTop: '12px',
+                      background: `${C.accent}12`,
+                      border: `1.5px solid ${C.accent}30`,
+                      borderRadius: RADIUS.btn,
+                      padding: '6px 14px',
                       fontSize: `${fontSize - 4}px`,
-                      color: '#6b7280',
+                      color: C.accent,
                       cursor: 'pointer',
+                      fontFamily: FONT.heading,
+                      fontWeight: '700',
                     }}
                   >
                     {isSpeaking ? '⏹ Stop' : '🔊 Read aloud'}
@@ -159,11 +153,22 @@ export default function HomePage() {
               </div>
             </div>
           ))}
+
           {loading && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px' }}>
-              <span style={{ fontSize: '20px', animation: 'spin 1s linear infinite' }}>⏳</span>
-              <span style={{ fontSize: `${fontSize - 2}px`, color: '#6b7280' }}>
-                {language === 'en' ? 'TechSage is thinking...' : 'யோசிக்கிறது...'}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px',
+              background: 'rgba(255,255,255,0.72)', borderRadius: RADIUS.card,
+              boxShadow: SHADOWS.card, backdropFilter: 'blur(12px)',
+              width: 'fit-content',
+            }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: GRAD.primaryBtn,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', boxShadow: SHADOWS.button }}>🤖</div>
+              <span style={{ display: 'flex', gap: '5px' }}>
+                {[0,1,2].map(i => (
+                  <span key={i} style={{
+                    width: '9px', height: '9px', borderRadius: '50%', background: C.accent,
+                    animation: `dots 1.2s ease-in-out ${i * 0.2}s infinite`, display: 'inline-block',
+                  }}/>
+                ))}
               </span>
             </div>
           )}
@@ -171,108 +176,107 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Error messages */}
+      {/* ── Error ────────────────────────────────────────────── */}
       {(micError || apiError) && (
-        <Card accent="#d97706">
-          <p style={{ fontSize: `${fontSize - 2}px`, color: '#92400e' }}>
+        <ClayCard accent={C.amber} padding="18px">
+          <p style={{ fontSize: `${fontSize - 2}px`, color: '#78350F', fontFamily: FONT.heading, fontWeight: '700' }}>
             ⚠️ {micError || apiError}
           </p>
-        </Card>
+        </ClayCard>
       )}
 
-      {/* Mic + input area */}
-      <Card>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-          <MicButton
-            state={micState}
-            onClick={handleMicClick}
-            fontSize={fontSize}
-          />
+      {/* ── Mic + input card ─────────────────────────────────── */}
+      <ClayCard>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '22px' }}>
+          <MicButton state={micState} onClick={handleMicClick} fontSize={fontSize} />
 
-          {/* Not supported fallback notice */}
           {!isSupported && (
-            <p style={{ fontSize: `${fontSize - 4}px`, color: '#9ca3af', textAlign: 'center' }}>
-              Voice input not available in this browser. Please type below.
+            <p style={{ fontSize: `${fontSize - 4}px`, color: C.muted, textAlign: 'center' }}>
+              Voice input not available in this browser — please type below.
             </p>
           )}
 
-          {/* Text input */}
           <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
-            <input
-              ref={inputRef}
+            <ClayInput
+              inputRef={inputRef}
               value={inputText}
               onChange={e => setInputText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSubmit()}
               placeholder={language === 'en' ? 'Or type your question here...' : 'அல்லது இங்கே தட்டச்சு செய்யுங்கள்...'}
-              style={{
-                flex: 1,
-                fontSize: `${fontSize}px`,
-                padding: '14px 16px',
-                borderRadius: '12px',
-                border: '2px solid #d1d5db',
-                outline: 'none',
-                color: '#1f2937',
-                background: '#f9fafb',
-              }}
+              fontSize={fontSize}
+              style={{ flex: 1 }}
             />
-            <button
+            <ClayButton
               onClick={() => handleSubmit()}
               disabled={!inputText.trim() || loading}
-              style={{
-                background: '#1F4E79',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '14px 20px',
-                fontSize: `${fontSize}px`,
-                fontWeight: '700',
-                cursor: inputText.trim() && !loading ? 'pointer' : 'not-allowed',
-                opacity: inputText.trim() && !loading ? 1 : 0.5,
-              }}
+              size="md"
             >
-              Send
-            </button>
+              Send ↗
+            </ClayButton>
           </div>
 
           {requestsRemaining < 5 && (
-            <p style={{ fontSize: `${fontSize - 5}px`, color: '#9ca3af' }}>
+            <p style={{ fontSize: `${fontSize - 5}px`, color: C.muted, fontFamily: FONT.heading, fontWeight: '600' }}>
               {requestsRemaining} question{requestsRemaining !== 1 ? 's' : ''} remaining this session
             </p>
           )}
         </div>
-      </Card>
+      </ClayCard>
 
-      {/* Quick questions */}
+      {/* ── Quick questions ───────────────────────────────────── */}
       {conversation.length === 0 && (
         <div>
-          <p style={{ fontSize: `${fontSize - 2}px`, fontWeight: '700', color: '#374151', marginBottom: '12px' }}>
+          <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 2}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
             {language === 'en' ? 'Common questions — tap to ask:' : 'பொதுவான கேள்விகள் — தட்டவும்:'}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
             {questions.map((q, i) => (
-              <button
-                key={i}
-                onClick={() => handleQuickQuestion(q)}
-                style={{
-                  background: '#f0f7ff',
-                  border: '2px solid #bfdbfe',
-                  borderRadius: '24px',
-                  padding: '10px 18px',
-                  fontSize: `${fontSize - 3}px`,
-                  color: '#1e40af',
-                  cursor: 'pointer',
-                  fontWeight: '500',
-                  lineHeight: 1.4,
-                }}
-              >
-                {q}
-              </button>
+              <QuickChip key={i} icon={q.icon} text={q.text} gradient={ICON_GRADS[i]} fontSize={fontSize}
+                onClick={() => { setInputText(q.text); handleSubmit(q.text) }} />
             ))}
           </div>
         </div>
       )}
-
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
+  )
+}
+
+function QuickChip({ icon, text, gradient, fontSize, onClick }) {
+  const [hovered, setHovered] = useState(false)
+  const [pressed, setPressed] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setHovered(false); setPressed(false) }}
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '8px',
+        background: hovered ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.72)',
+        border: `1.5px solid ${C.accent}22`,
+        borderRadius: RADIUS.md,
+        padding: '10px 16px',
+        fontSize: `${fontSize - 3}px`,
+        color: C.foreground,
+        cursor: 'pointer',
+        fontFamily: FONT.body,
+        fontWeight: '500',
+        lineHeight: 1.4,
+        boxShadow: pressed ? SHADOWS.pressed : hovered ? SHADOWS.cardHover : SHADOWS.card,
+        transform: pressed ? 'scale(0.95)' : hovered ? 'translateY(-3px)' : 'translateY(0)',
+        transition: 'all 0.2s cubic-bezier(0.34,1.56,0.64,1)',
+        backdropFilter: 'blur(10px)',
+      }}
+    >
+      <span style={{
+        width: '28px', height: '28px', borderRadius: '50%',
+        background: gradient,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '14px', flexShrink: 0,
+        boxShadow: '2px 2px 6px rgba(0,0,0,0.15)',
+      }}>{icon}</span>
+      {text}
+    </button>
   )
 }
