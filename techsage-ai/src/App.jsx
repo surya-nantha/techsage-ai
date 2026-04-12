@@ -1,13 +1,9 @@
-import { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
-// import HomePage from './pages/HomePage.jsx'
-// import ScamDetector from './pages/ScamDetector.jsx'
-// import ScamQuiz from './pages/ScamQuiz.jsx'
-// import Tutorials from './pages/Tutorials.jsx'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-// import './App.css'
+import HomePage from './pages/HomePage.jsx'
+import ScamDetector from './pages/ScamDetector.jsx'
+import ScamQuiz from './pages/ScamQuiz.jsx'
+import Tutorials from './pages/Tutorials.jsx'
 
 // ─── Settings Context ───────────────────────────────────────────────
 export const SettingsContext = createContext(null)
@@ -107,14 +103,14 @@ function NavTab({ to, icon, label }) {
   )
 }
 
-function App() {
+export default function App() {
   const [fontSize, setFontSize] = useState(18)
   const [language, setLanguage] = useState('en')
- 
+
   const increaseFontSize = () => setFontSize(f => Math.min(f + 2, 26))
   const decreaseFontSize = () => setFontSize(f => Math.max(f - 2, 14))
   const toggleLanguage = () => setLanguage(l => l === 'en' ? 'ta' : 'en')
- 
+
   return (
     <SettingsContext.Provider value={{ fontSize, language }}>
       <BrowserRouter>
@@ -152,7 +148,7 @@ function App() {
               </button>
             </div>
           </header>
- 
+
           {/* Nav */}
           <nav style={S.nav} role="navigation" aria-label="Main navigation">
             <NavTab to="/" icon="🏠" label={language === 'en' ? 'Ask AI' : 'கேளுங்கள்'} />
@@ -160,17 +156,17 @@ function App() {
             <NavTab to="/quiz" icon="🎯" label={language === 'en' ? 'Practice' : 'பயிற்சி'} />
             <NavTab to="/tutorials" icon="📚" label={language === 'en' ? 'Tutorials' : 'பாடங்கள்'} />
           </nav>
- 
+
           {/* Page content */}
-          {/* <main style={S.main}>
+          <main style={S.main}>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/scam-check" element={<ScamDetector />} />
               <Route path="/quiz" element={<ScamQuiz />} />
               <Route path="/tutorials" element={<Tutorials />} />
             </Routes>
-          </main> */}
- 
+          </main>
+
           {/* Footer */}
           <footer style={{ textAlign: 'center', padding: '16px', fontSize: '13px', color: '#94a3b8', background: '#fff', borderTop: '1px solid #e2e8f0' }}>
             Made with ❤️ for GenLink Hacks 2026 · Helping seniors feel confident with technology
@@ -180,5 +176,3 @@ function App() {
     </SettingsContext.Provider>
   )
 }
-
-export default App
