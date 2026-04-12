@@ -167,11 +167,11 @@ Edit the `ASSISTANT_SYSTEM_PROMPT` constant in `api/chat.js` to adjust how TechS
 
 ## GenLink Hackathon Submission
 
-- **Team:** [Your Name]
+- **Team:** Vaishnavi Srivastava, Surya Nantha, 
 - **Event:** GenLink Hacks 2026
 - **Deadline:** April 18, 2026 @ 9:30 AM IST
 - **Live demo:** https://your-app.vercel.app
-- **GitHub:** https://github.com/YOUR_USERNAME/techsage-ai
+- **GitHub:** https://github.com/surya-nantha/techsage-ai
 
 ---
 
