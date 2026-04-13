@@ -48,30 +48,6 @@ export default function ScamDetector() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-<<<<<<< HEAD
-      {/* Header card */}
-      <ClayCard style={{ background: 'linear-gradient(135deg, rgba(254,226,226,0.5) 0%, rgba(255,255,255,0.72) 60%)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '64px', height: '64px', borderRadius: '50%',
-            background: 'linear-gradient(135deg, #F87171 0%, #DC2626 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '30px', flexShrink: 0, boxShadow: SHADOWS.button,
-            animation: 'clay-breathe 5s ease-in-out infinite',
-          }}>🛡️</div>
-          <div>
-            <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`, fontWeight: '900', color: '#991B1B', marginBottom: '6px' }}>
-              {language === 'en' ? 'Scam Detector' : language === 'ta' ? 'மோசடி கண்டறிவி' : 'स्कैम डिटेक्टर'}
-            </p>
-            <p style={{ fontSize: `${fontSize - 1}px`, color: C.muted, lineHeight: 1.7 }}>
-              {language === 'en'
-                  ? 'Got a suspicious message? Paste or speak it below and I will check if it is safe.'
-                  : language === 'ta'
-                  ? 'சந்தேகமான செய்தி வந்ததா? கீழே ஒட்டவும் அல்லது பேசவும்.'
-                  : 'कोई संदिग्ध संदेश मिला? नीचे पेस्ट करें या बोलें और मैं जाँच करूँगा।'}
-            </p>
-          </div>
-=======
       {/* ══ HEADER CARD — confused-phone illustration ══════════
           The confused senior looking at phone perfectly captures
           the "I got a suspicious message, what do I do?" moment  */}
@@ -94,7 +70,6 @@ export default function ScamDetector() {
              : language === 'ta' ? 'சந்தேகமான செய்தி வந்ததா? கீழே ஒட்டவும் அல்லது பேசவும் — நான் சொல்கிறேன்.'
              : 'Got a suspicious message? Paste or speak it below and I will tell you if it is safe or a scam.'}
           </p>
->>>>>>> 54f0d26 (illustrations update)
         </div>
         {/* Confused-phone illustration — perfectly on-topic */}
         <div style={{ flexShrink: 0, alignSelf: 'flex-end', marginRight: '8px' }}>
@@ -109,24 +84,12 @@ export default function ScamDetector() {
       {/* ══ INPUT CARD ════════════════════════════════════════ */}
       <ClayCard>
         <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
-<<<<<<< HEAD
-          {language === 'en' ? 'Paste the suspicious message here:' : language === 'ta' ? 'சந்தேகமான செய்தியை ஒட்டவும்:' : 'संदिग्ध संदेश यहाँ पेस्ट करें:'}
-=======
           {language === 'hi' ? 'संदिग्ध संदेश यहाँ पेस्ट करें:' : language === 'ta' ? 'சந்தேகமான செய்தியை ஒட்டவும்:' : 'Paste or type the suspicious message here:'}
->>>>>>> 54f0d26 (illustrations update)
         </p>
         <ClayInput
           value={messageText}
           onChange={e => setMessageText(e.target.value)}
-<<<<<<< HEAD
-          placeholder={language === 'en'
-            ? 'Paste the message text here, or tap the microphone to speak it...'
-            : language === 'ta'
-            ? 'இங்கே செய்தியை ஒட்டவும்...'
-            : 'संदेश यहाँ पेस्ट करें, या माइक से बोलें...'}
-=======
           placeholder={language === 'hi' ? 'संदेश यहाँ पेस्ट करें...' : language === 'ta' ? 'இங்கே செய்தியை ஒட்டவும்...' : 'Paste the message text here, or tap the microphone to speak it...'}
->>>>>>> 54f0d26 (illustrations update)
           fontSize={fontSize - 1}
           multiline
           rows={4}
@@ -159,11 +122,7 @@ export default function ScamDetector() {
       {/* ══ EXAMPLE MESSAGES ═════════════════════════════════ */}
       <ClayCard>
         <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
-<<<<<<< HEAD
-          {language === 'en' ? '🧪 Try these example messages:' : language === 'ta' ? 'இந்த உதாரண செய்திகளை முயற்சிக்கவும்:' : '🧪 इन उदाहरण संदेशों को आज़माएं:'}
-=======
           {language === 'hi' ? '🧪 इन उदाहरण संदेशों को आज़माएं:' : language === 'ta' ? '🧪 இந்த உதாரண செய்திகளை முயற்சிக்கவும்:' : '🧪 Try these example messages:'}
->>>>>>> 54f0d26 (illustrations update)
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {EXAMPLES.map((ex, i) => (
@@ -173,26 +132,6 @@ export default function ScamDetector() {
         </div>
       </ClayCard>
 
-<<<<<<< HEAD
-      {/* Safety tips */}
-      <ClayCard style={{ background: 'linear-gradient(135deg, rgba(209,250,229,0.5) 0%, rgba(255,255,255,0.72) 60%)' }}>
-        <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: '#065F46', marginBottom: '14px' }}>
-          🛡️ {language === 'en' ? 'Golden rules for staying safe:' : language === 'ta' ? 'பாதுகாப்பிற்கான பொன் விதிகள்:' : 'सुरक्षित रहने के सुनहरे नियम:'}
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {SAFETY_TIPS.map((tip, i) => (
-            <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-              <div style={{
-                width: '26px', height: '26px', borderRadius: '50%',
-                background: 'linear-gradient(135deg, #34D399 0%, #059669 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '12px', color: '#fff', flexShrink: 0,
-                boxShadow: SHADOWS.button,
-              }}>✓</div>
-              <p style={{ fontSize: `${fontSize - 3}px`, color: '#065F46', lineHeight: 1.65 }}>{tip}</p>
-            </div>
-          ))}
-=======
       {/* ══ SAFETY TIPS — real seniors + young-helping illus ═ */}
       <div style={{
         borderRadius: RADIUS.card,
@@ -214,7 +153,6 @@ export default function ScamDetector() {
               📸 Digital literacy workshop, Pune 2023
             </span>
           </div>
->>>>>>> 54f0d26 (illustrations update)
         </div>
 
         <div style={{ padding: '18px 22px 22px' }}>

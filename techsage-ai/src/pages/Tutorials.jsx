@@ -17,20 +17,6 @@ const TUTORIAL_META = {
   privacy:   { image: '/images/illus-couple-tablet.png',      imageAlt: 'A senior couple sitting together calmly reading information on a tablet',                              grad: GRAD.iconPurple },
 }
 
-<<<<<<< HEAD
-const TUTORIAL_IMAGES = {
-  email:     '/img-email.png',
-  videocall: '/img-video-call.png',
-  wifi:      '/img-wifi.png',
-  photos:    '/img-photo-sharing.png',
-  ai:        '/img-ai-assistant.png',
-  passwords: '/img-password.png',
-  privacy:   '/img-online-safety.png',
-}
-
-// ─── Tutorial step viewer ─────────────────────────────────────────
-function TutorialViewer({ tutorial, colorIdx, onBack }) {
-=======
 const DIFFICULTY_CONFIG = {
   Beginner:     { bg: 'linear-gradient(135deg,#34D399,#059669)', label: '🌱 Beginner'     },
   Intermediate: { bg: 'linear-gradient(135deg,#FCD34D,#D97706)', label: '⚡ Intermediate' },
@@ -44,7 +30,6 @@ function SafeImg({ src, alt, style = {} }) {
 
 // ─── Step viewer ──────────────────────────────────────────────────
 function TutorialViewer({ tutorial, meta, onBack }) {
->>>>>>> 54f0d26 (illustrations update)
   const { fontSize, language } = useSettings()
   const { speak, stop, isSpeaking } = useSpeechSynthesis()
   const [step, setStep] = useState(0)
@@ -62,44 +47,6 @@ function TutorialViewer({ tutorial, meta, onBack }) {
         ← Back to tutorials
       </ClayButton>
 
-<<<<<<< HEAD
-      {/* Tutorial identity card */}
-      <ClayCard style={{ background: CARD_BG_TINTS[colorIdx % CARD_BG_TINTS.length] }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
-          <div style={{
-            width: '70px', height: '70px', borderRadius: '50%',
-            background: grad, flexShrink: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '34px', boxShadow: SHADOWS.button,
-            animation: 'clay-breathe 5s ease-in-out infinite',
-          }}>
-            {tutorial.icon}
-          </div>
-          <div>
-            <p style={{
-              fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`,
-              fontWeight: '900', color: C.foreground, marginBottom: '6px', lineHeight: 1.2,
-            }}>
-              {tutorial.title}
-            </p>
-            <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, lineHeight: 1.6 }}>
-              {tutorial.description}
-            </p>
-            {TUTORIAL_IMAGES[tutorial.id] && (
-              <img
-                src={TUTORIAL_IMAGES[tutorial.id]}
-                alt={tutorial.title}
-                style={{
-                  width: '100%',
-                  maxHeight: '200px',
-                  objectFit: 'cover',
-                  borderRadius: RADIUS.md,
-                  marginTop: '18px',
-                  boxShadow: SHADOWS.card,
-                }}
-              />
-            )}
-=======
       {/* Tutorial identity card with its illustration */}
       <div style={{
         borderRadius: RADIUS.card,
@@ -120,7 +67,6 @@ function TutorialViewer({ tutorial, meta, onBack }) {
               <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 2}px`, fontWeight: '900', color: C.foreground, lineHeight: 1.2 }}>{tutorial.title}</p>
               <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, lineHeight: 1.5, marginTop: '4px' }}>{tutorial.description}</p>
             </div>
->>>>>>> 54f0d26 (illustrations update)
           </div>
         </div>
         {/* Topic-matched illustration */}
