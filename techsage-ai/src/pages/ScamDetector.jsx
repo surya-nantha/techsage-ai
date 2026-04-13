@@ -54,12 +54,14 @@ export default function ScamDetector() {
           }}>🛡️</div>
           <div>
             <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`, fontWeight: '900', color: '#991B1B', marginBottom: '6px' }}>
-              {language === 'en' ? 'Scam Detector' : 'மோசடி கண்டறிவி'}
+              {language === 'en' ? 'Scam Detector' : language === 'ta' ? 'மோசடி கண்டறிவி' : 'स्कैम डिटेक्टर'}
             </p>
             <p style={{ fontSize: `${fontSize - 1}px`, color: C.muted, lineHeight: 1.7 }}>
               {language === 'en'
-                ? 'Got a suspicious message? Paste or speak it below and I will check if it is safe.'
-                : 'சந்தேகமான செய்தி வந்ததா? கீழே ஒட்டவும் அல்லது பேசவும்.'}
+                  ? 'Got a suspicious message? Paste or speak it below and I will check if it is safe.'
+                  : language === 'ta'
+                  ? 'சந்தேகமான செய்தி வந்ததா? கீழே ஒட்டவும் அல்லது பேசவும்.'
+                  : 'कोई संदिग्ध संदेश मिला? नीचे पेस्ट करें या बोलें और मैं जाँच करूँगा।'}
             </p>
           </div>
         </div>
@@ -68,14 +70,16 @@ export default function ScamDetector() {
       {/* Input card */}
       <ClayCard>
         <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
-          {language === 'en' ? 'Paste the suspicious message here:' : 'சந்தேகமான செய்தியை ஒட்டவும்:'}
+          {language === 'en' ? 'Paste the suspicious message here:' : language === 'ta' ? 'சந்தேகமான செய்தியை ஒட்டவும்:' : 'संदिग्ध संदेश यहाँ पेस्ट करें:'}
         </p>
         <ClayInput
           value={messageText}
           onChange={e => setMessageText(e.target.value)}
           placeholder={language === 'en'
             ? 'Paste the message text here, or tap the microphone to speak it...'
-            : 'இங்கே செய்தியை ஒட்டவும்...'}
+            : language === 'ta'
+            ? 'இங்கே செய்தியை ஒட்டவும்...'
+            : 'संदेश यहाँ पेस्ट करें, या माइक से बोलें...'}
           fontSize={fontSize - 1}
           multiline
           rows={4}
@@ -117,7 +121,7 @@ export default function ScamDetector() {
       {/* Example messages */}
       <ClayCard>
         <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
-          {language === 'en' ? '🧪 Try these example messages:' : 'இந்த உதாரண செய்திகளை முயற்சிக்கவும்:'}
+          {language === 'en' ? '🧪 Try these example messages:' : language === 'ta' ? 'இந்த உதாரண செய்திகளை முயற்சிக்கவும்:' : '🧪 इन उदाहरण संदेशों को आज़माएं:'}
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {EXAMPLES.map((ex, i) => (
@@ -130,7 +134,7 @@ export default function ScamDetector() {
       {/* Safety tips */}
       <ClayCard style={{ background: 'linear-gradient(135deg, rgba(209,250,229,0.5) 0%, rgba(255,255,255,0.72) 60%)' }}>
         <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: '#065F46', marginBottom: '14px' }}>
-          🛡️ {language === 'en' ? 'Golden rules for staying safe:' : 'பாதுகாப்பிற்கான பொன் விதிகள்:'}
+          🛡️ {language === 'en' ? 'Golden rules for staying safe:' : language === 'ta' ? 'பாதுகாப்பிற்கான பொன் விதிகள்:' : 'सुरक्षित रहने के सुनहरे नियम:'}
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {SAFETY_TIPS.map((tip, i) => (

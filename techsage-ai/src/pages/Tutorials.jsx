@@ -30,6 +30,16 @@ const DIFFICULTY_CONFIG = {
   Intermediate: { bg: 'linear-gradient(135deg, #FCD34D, #D97706)', label: '⚡ Intermediate' },
 }
 
+const TUTORIAL_IMAGES = {
+  email:     '/img-email.png',
+  videocall: '/img-video-call.png',
+  wifi:      '/img-wifi.png',
+  photos:    '/img-photo-sharing.png',
+  ai:        '/img-ai-assistant.png',
+  passwords: '/img-password.png',
+  privacy:   '/img-online-safety.png',
+}
+
 // ─── Tutorial step viewer ─────────────────────────────────────────
 function TutorialViewer({ tutorial, colorIdx, onBack }) {
   const { fontSize, language } = useSettings()
@@ -73,6 +83,20 @@ function TutorialViewer({ tutorial, colorIdx, onBack }) {
             <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, lineHeight: 1.6 }}>
               {tutorial.description}
             </p>
+            {TUTORIAL_IMAGES[tutorial.id] && (
+              <img
+                src={TUTORIAL_IMAGES[tutorial.id]}
+                alt={tutorial.title}
+                style={{
+                  width: '100%',
+                  maxHeight: '200px',
+                  objectFit: 'cover',
+                  borderRadius: RADIUS.md,
+                  marginTop: '18px',
+                  boxShadow: SHADOWS.card,
+                }}
+              />
+            )}
           </div>
         </div>
       </ClayCard>
