@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import React from 'react'
 import ClayCard from '../components/Card.jsx'
 import { useProgress } from '../hooks/useProgress.js'
@@ -109,5 +110,3 @@ function AchievementBadge({ achievement: a, unlocked, fontSize }) {
   )
 }
 
-// Need to import useState
-import { useState } from 'react'
