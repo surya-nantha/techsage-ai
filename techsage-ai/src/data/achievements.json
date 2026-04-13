@@ -1,0 +1,12 @@
+[
+  { "id": "first_question", "icon": "🌟", "title": "First step!", "desc": "Asked your first question", "trigger": "question_count", "threshold": 1 },
+  { "id": "five_questions", "icon": "🔥", "title": "On a roll!", "desc": "Asked 5 questions", "trigger": "question_count", "threshold": 5 },
+  { "id": "scam_spotter", "icon": "🛡️", "title": "Scam spotter", "desc": "Checked your first suspicious message", "trigger": "scam_check", "threshold": 1 },
+  { "id": "scam_expert", "icon": "🦅", "title": "Scam expert", "desc": "Checked 5 suspicious messages", "trigger": "scam_check", "threshold": 5 },
+  { "id": "quiz_starter", "icon": "🎯", "title": "Quiz starter", "desc": "Completed your first quiz question", "trigger": "quiz_answered", "threshold": 1 },
+  { "id": "quiz_master", "icon": "🏆", "title": "Quiz master", "desc": "Got 8 or more quiz answers correct", "trigger": "quiz_score", "threshold": 8 },
+  { "id": "first_tutorial", "icon": "📚", "title": "Eager learner", "desc": "Finished your first tutorial", "trigger": "tutorial_done", "threshold": 1 },
+  { "id": "all_tutorials", "icon": "🎓", "title": "Tech graduate!", "desc": "Finished all 6 tutorials", "trigger": "tutorial_done", "threshold": 6 },
+  { "id": "daily_tip", "icon": "💡", "title": "Tip of the day", "desc": "Read your first daily tip", "trigger": "tip_read", "threshold": 1 },
+  { "id": "week_streak", "icon": "📅", "title": "7-day learner", "desc": "Used TechSage 7 days in a row", "trigger": "streak_days", "threshold": 7 }
+]

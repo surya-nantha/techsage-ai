@@ -4,28 +4,48 @@
     "scenario": "You get a text message: \"URGENT: Your Social Security Number has been suspended due to suspicious activity. Call 1-800-555-4823 immediately or face arrest.\"",
     "correctAnswer": "SCAM",
     "explanation": "Government agencies never suspend your Social Security number by text message, and they never threaten arrest. This is a classic government impersonation scam. Delete the message immediately.",
-    "redFlags": ["Threatening arrest", "Urgent pressure to act now", "Unknown phone number", "Government agencies never text about this"]
+    "redFlags": [
+      "Threatening arrest",
+      "Urgent pressure to act now",
+      "Unknown phone number",
+      "Government agencies never text about this"
+    ]
   },
   {
     "id": "q002",
     "scenario": "Your bank sends you this email: \"Dear customer, we noticed unusual activity. Please verify your account at www.mybank-secure-login.net within 24 hours to avoid suspension.\"",
     "correctAnswer": "SCAM",
     "explanation": "Real bank emails come from the bank's official domain (like @yourbank.com), not lookalike websites ending in .net with extra words. The fake web address is the biggest red flag here.",
-    "redFlags": ["Suspicious web address (not the real bank)", "Urgency and time pressure", "Threatening account suspension", "Real banks never ask you to log in via email links"]
+    "redFlags": [
+      "Suspicious web address (not the real bank)",
+      "Urgency and time pressure",
+      "Threatening account suspension",
+      "Real banks never ask you to log in via email links"
+    ]
   },
   {
     "id": "q003",
     "scenario": "You receive a call: \"Hello, I'm calling from Microsoft Support. We have detected a virus on your computer. Please allow me remote access to fix it for a $99 fee.\"",
     "correctAnswer": "SCAM",
     "explanation": "Microsoft never calls you out of the blue about viruses on your computer. This is the 'tech support scam' — one of the most common scams targeting seniors. Hang up immediately.",
-    "redFlags": ["Unsolicited call from 'Microsoft'", "Asking for remote access to your computer", "Asking for payment over the phone", "Microsoft does not monitor individual computers"]
+    "redFlags": [
+      "Unsolicited call from 'Microsoft'",
+      "Asking for remote access to your computer",
+      "Asking for payment over the phone",
+      "Microsoft does not monitor individual computers"
+    ]
   },
   {
     "id": "q004",
     "scenario": "Your friend sends a WhatsApp message: \"Hi! I'm locked out of my account and need you to forward me the 6-digit code you just received on your phone. It's urgent!\"",
     "correctAnswer": "SCAM",
     "explanation": "This is account takeover fraud. Scammers hack your friend's account, then use it to trick you. The 6-digit code is YOUR login code for WhatsApp or another service. Never share it.",
-    "redFlags": ["Request to forward a verification code", "Urgency", "Even trusted contacts can be hacked", "No legitimate service asks for codes this way"]
+    "redFlags": [
+      "Request to forward a verification code",
+      "Urgency",
+      "Even trusted contacts can be hacked",
+      "No legitimate service asks for codes this way"
+    ]
   },
   {
     "id": "q005",
@@ -39,21 +59,35 @@
     "scenario": "You receive a phone call: \"Congratulations! You have been selected to receive a free medical alert device worth $400. We just need your Medicare number to ship it to you at no cost.\"",
     "correctAnswer": "SCAM",
     "explanation": "This is Medicare fraud. Scammers use your Medicare number to bill for fake services. There are no truly free medical devices given over the phone. Hang up and call Medicare directly if concerned.",
-    "redFlags": ["Asking for Medicare or insurance number", "Something for free to create goodwill", "Unsolicited call", "Too good to be true offer"]
+    "redFlags": [
+      "Asking for Medicare or insurance number",
+      "Something for free to create goodwill",
+      "Unsolicited call",
+      "Too good to be true offer"
+    ]
   },
   {
     "id": "q007",
     "scenario": "Your grandson calls you: \"Grandma, I'm in trouble — I had an accident and I'm in jail. I need $2,000 in Amazon gift cards right now. Please don't tell mom and dad, I'm so embarrassed.\"",
     "correctAnswer": "SCAM",
     "explanation": "This is the 'grandparent scam'. Scammers impersonate grandchildren to create emotional panic. No real emergency ever requires payment in gift cards. Hang up and call your grandson directly on his known phone number.",
-    "redFlags": ["Asking for gift cards (never a real payment method for emergencies)", "Secrecy — asking you not to tell family", "Emotional manipulation and urgency", "Police and jails never accept gift card payments"]
+    "redFlags": [
+      "Asking for gift cards (never a real payment method for emergencies)",
+      "Secrecy — asking you not to tell family",
+      "Emotional manipulation and urgency",
+      "Police and jails never accept gift card payments"
+    ]
   },
   {
     "id": "q008",
     "scenario": "You get a text: \"Amazon: Your package #TRK2847 could not be delivered. Update your delivery address: amzn-delivery-update.com\"",
     "correctAnswer": "SCAM",
     "explanation": "Real Amazon delivery texts come from Amazon's official systems and link to amazon.com. The web address 'amzn-delivery-update.com' is a fake site designed to steal your password and credit card.",
-    "redFlags": ["Web address is not amazon.com", "Creating urgency about a package", "Amazon never asks you to re-enter delivery info via SMS link"]
+    "redFlags": [
+      "Web address is not amazon.com",
+      "Creating urgency about a package",
+      "Amazon never asks you to re-enter delivery info via SMS link"
+    ]
   },
   {
     "id": "q009",
@@ -67,6 +101,45 @@
     "scenario": "A WhatsApp message from an unknown number: \"Hi aunty, this is my new number. I lost my old phone. Can you send Rs. 5000 via UPI? I will return it tomorrow. Very urgent.\"",
     "correctAnswer": "SCAM",
     "explanation": "This is UPI fraud using social engineering. Scammers claim to be a relative with a new number to create trust. Always verify by calling the person on their old number or through a family member. Never send money to unverified numbers.",
-    "redFlags": ["Unknown number claiming to be family", "Urgency and time pressure", "Immediate money request", "Asks for UPI transfer — hard to reverse"]
+    "redFlags": [
+      "Unknown number claiming to be family",
+      "Urgency and time pressure",
+      "Immediate money request",
+      "Asks for UPI transfer — hard to reverse"
+    ]
+  },
+  {
+    "id": "q011",
+    "scenario": "You get a WhatsApp message: \"Dear customer, your SBI KYC is expired. Your account will be blocked in 24 hours. Update now by clicking: sbi-kyc-update.net/verify\"",
+    "correctAnswer": "SCAM",
+    "explanation": "SBI (or any bank) never asks you to update KYC by clicking a WhatsApp link. The website 'sbi-kyc-update.net' is fake — SBI's real website is onlinesbi.sbi. Always go directly to your bank's app or visit the branch.",
+    "redFlags": [
+      "Bank KYC never updated via WhatsApp link",
+      "Fake website address (not the real SBI domain)",
+      "Urgency and 24-hour deadline to create panic"
+    ]
+  },
+  {
+    "id": "q012",
+    "scenario": "A stranger sends you ₹1 on Google Pay with the message: 'Wrong transfer, please return ₹500 as I sent you ₹501 by mistake. My UPI ID is xyz@paytm'",
+    "correctAnswer": "SCAM",
+    "explanation": "This is a very common UPI refund scam in India. The scammer sends ₹1 to build trust, then claims they sent a large amount by mistake. There was no larger transfer — you will lose ₹500 if you pay. Always check your actual UPI balance statement before refunding anyone.",
+    "redFlags": [
+      "Claims to have sent more money than you actually received",
+      "Pressures you to refund quickly to an unknown UPI ID",
+      "Sending a small amount first to build false trust"
+    ]
+  },
+  {
+    "id": "q013",
+    "scenario": "You receive an SMS: \"Your Aadhaar card has been linked to illegal activities. Call CBI officer on 9876543210 within 2 hours to avoid arrest. Case no: CBI/2024/XXXX\"",
+    "correctAnswer": "SCAM",
+    "explanation": "The CBI and police never send SMS messages threatening arrest. This is the 'Digital Arrest' scam — a major fraud in India where criminals impersonate government officers. The national helpline for such scams is 1930. Never call the number in such messages.",
+    "redFlags": [
+      "Government agencies never threaten arrest via SMS",
+      "Urgent 2-hour deadline to create panic",
+      "Fake case numbers to appear official",
+      "Call the Cyber Crime helpline 1930 instead"
+    ]
   }
 ]

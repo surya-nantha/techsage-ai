@@ -6,12 +6,36 @@
     "difficulty": "Beginner",
     "description": "Learn to write and send your first email to family or friends.",
     "steps": [
-      { "stepNumber": 1, "title": "Open your email app", "description": "Find the Gmail or Mail app on your phone or tablet. It looks like an envelope. Tap it once to open it." },
-      { "stepNumber": 2, "title": "Start a new email", "description": "Look for a pencil icon or a button that says 'Compose' or 'New Message'. Tap it. This opens a blank email for you to write." },
-      { "stepNumber": 3, "title": "Enter the person's email address", "description": "Tap the 'To:' field at the top. Type the email address of the person you want to write to, for example: john@gmail.com. Make sure there are no spaces." },
-      { "stepNumber": 4, "title": "Write a subject", "description": "Tap the 'Subject' field and type a short title for your email, like 'Hello from me' or 'Checking in'. This tells them what your email is about." },
-      { "stepNumber": 5, "title": "Write your message", "description": "Tap the large empty area and type your message. Write whatever you want to say, just like writing a letter. Take your time — no rush!" },
-      { "stepNumber": 6, "title": "Send your email", "description": "When you are happy with your message, look for a 'Send' button or a paper airplane icon. Tap it once. Your email is sent! It usually arrives in seconds." }
+      {
+        "stepNumber": 1,
+        "title": "Open your email app",
+        "description": "Find the Gmail or Mail app on your phone or tablet. It looks like an envelope. Tap it once to open it."
+      },
+      {
+        "stepNumber": 2,
+        "title": "Start a new email",
+        "description": "Look for a pencil icon or a button that says 'Compose' or 'New Message'. Tap it. This opens a blank email for you to write."
+      },
+      {
+        "stepNumber": 3,
+        "title": "Enter the person's email address",
+        "description": "Tap the 'To:' field at the top. Type the email address of the person you want to write to, for example: john@gmail.com. Make sure there are no spaces."
+      },
+      {
+        "stepNumber": 4,
+        "title": "Write a subject",
+        "description": "Tap the 'Subject' field and type a short title for your email, like 'Hello from me' or 'Checking in'. This tells them what your email is about."
+      },
+      {
+        "stepNumber": 5,
+        "title": "Write your message",
+        "description": "Tap the large empty area and type your message. Write whatever you want to say, just like writing a letter. Take your time — no rush!"
+      },
+      {
+        "stepNumber": 6,
+        "title": "Send your email",
+        "description": "When you are happy with your message, look for a 'Send' button or a paper airplane icon. Tap it once. Your email is sent! It usually arrives in seconds."
+      }
     ]
   },
   {
@@ -21,12 +45,36 @@
     "difficulty": "Beginner",
     "description": "See and talk to your family face-to-face using FaceTime, WhatsApp, or Zoom.",
     "steps": [
-      { "stepNumber": 1, "title": "Choose your app", "description": "Popular apps for video calls are: FaceTime (iPhones only), WhatsApp (all phones), Zoom (for group calls). Make sure the app is installed. Ask a family member to help you install it if needed." },
-      { "stepNumber": 2, "title": "Open WhatsApp (most common)", "description": "Find the WhatsApp icon — it is green with a white phone. Tap it to open the app." },
-      { "stepNumber": 3, "title": "Find the person", "description": "Tap the name of the person you want to call. They must already be in your contacts and also have WhatsApp on their phone." },
-      { "stepNumber": 4, "title": "Start the video call", "description": "On their contact page, look for a video camera icon at the top right corner. Tap it. WhatsApp will start calling them." },
-      { "stepNumber": 5, "title": "Wait for them to answer", "description": "The phone will ring until they pick up. When they answer, you will see their face on your screen and they will see yours. Make sure you are in a well-lit room." },
-      { "stepNumber": 6, "title": "End the call", "description": "When you are done talking, tap the red phone icon to hang up. You can also tap the screen to see the buttons if they disappear." }
+      {
+        "stepNumber": 1,
+        "title": "Choose your app",
+        "description": "Popular apps for video calls are: FaceTime (iPhones only), WhatsApp (all phones), Zoom (for group calls). Make sure the app is installed. Ask a family member to help you install it if needed."
+      },
+      {
+        "stepNumber": 2,
+        "title": "Open WhatsApp (most common)",
+        "description": "Find the WhatsApp icon — it is green with a white phone. Tap it to open the app."
+      },
+      {
+        "stepNumber": 3,
+        "title": "Find the person",
+        "description": "Tap the name of the person you want to call. They must already be in your contacts and also have WhatsApp on their phone."
+      },
+      {
+        "stepNumber": 4,
+        "title": "Start the video call",
+        "description": "On their contact page, look for a video camera icon at the top right corner. Tap it. WhatsApp will start calling them."
+      },
+      {
+        "stepNumber": 5,
+        "title": "Wait for them to answer",
+        "description": "The phone will ring until they pick up. When they answer, you will see their face on your screen and they will see yours. Make sure you are in a well-lit room."
+      },
+      {
+        "stepNumber": 6,
+        "title": "End the call",
+        "description": "When you are done talking, tap the red phone icon to hang up. You can also tap the screen to see the buttons if they disappear."
+      }
     ]
   },
   {
@@ -36,12 +84,36 @@
     "difficulty": "Beginner",
     "description": "Connect your phone or tablet to the internet at home or at a café.",
     "steps": [
-      { "stepNumber": 1, "title": "Open Settings", "description": "Find the Settings app on your phone — it usually looks like a gear icon. Tap it to open." },
-      { "stepNumber": 2, "title": "Find Wi-Fi settings", "description": "In Settings, look for 'Wi-Fi' or 'Wireless & Networks'. Tap it. You will see a list of available Wi-Fi networks nearby." },
-      { "stepNumber": 3, "title": "Turn Wi-Fi on", "description": "If Wi-Fi is off, you will see a switch or toggle. Tap it to turn it on (it should turn blue or green)." },
-      { "stepNumber": 4, "title": "Choose your network", "description": "You will see a list of network names. Find your home network name (your internet provider or the name you set). Tap it." },
-      { "stepNumber": 5, "title": "Enter the password", "description": "Type your Wi-Fi password carefully. The password is usually on a sticker on your Wi-Fi router box at home. Tap 'Connect' or 'Join' when done." },
-      { "stepNumber": 6, "title": "You are connected!", "description": "If the password is correct, you will see a tick or the Wi-Fi symbol at the top of your screen. You are now connected to the internet!" }
+      {
+        "stepNumber": 1,
+        "title": "Open Settings",
+        "description": "Find the Settings app on your phone — it usually looks like a gear icon. Tap it to open."
+      },
+      {
+        "stepNumber": 2,
+        "title": "Find Wi-Fi settings",
+        "description": "In Settings, look for 'Wi-Fi' or 'Wireless & Networks'. Tap it. You will see a list of available Wi-Fi networks nearby."
+      },
+      {
+        "stepNumber": 3,
+        "title": "Turn Wi-Fi on",
+        "description": "If Wi-Fi is off, you will see a switch or toggle. Tap it to turn it on (it should turn blue or green)."
+      },
+      {
+        "stepNumber": 4,
+        "title": "Choose your network",
+        "description": "You will see a list of network names. Find your home network name (your internet provider or the name you set). Tap it."
+      },
+      {
+        "stepNumber": 5,
+        "title": "Enter the password",
+        "description": "Type your Wi-Fi password carefully. The password is usually on a sticker on your Wi-Fi router box at home. Tap 'Connect' or 'Join' when done."
+      },
+      {
+        "stepNumber": 6,
+        "title": "You are connected!",
+        "description": "If the password is correct, you will see a tick or the Wi-Fi symbol at the top of your screen. You are now connected to the internet!"
+      }
     ]
   },
   {
@@ -51,12 +123,36 @@
     "difficulty": "Beginner",
     "description": "Send your favourite photos to family via WhatsApp or email.",
     "steps": [
-      { "stepNumber": 1, "title": "Open your Photos app", "description": "Find the Photos or Gallery app on your phone. Tap it. You will see all your photos." },
-      { "stepNumber": 2, "title": "Find the photo you want to share", "description": "Scroll through your photos to find the one you want to send. Tap it once to open it fully." },
-      { "stepNumber": 3, "title": "Tap the Share button", "description": "Look for a share icon — on iPhones it looks like a box with an arrow pointing up. On Android it looks like three dots connected by lines. Tap it." },
-      { "stepNumber": 4, "title": "Choose where to send it", "description": "A menu will appear showing apps like WhatsApp, Gmail, Messages. Tap the one you want to use to send the photo." },
-      { "stepNumber": 5, "title": "Choose who to send it to", "description": "Select the person from your contacts. Add a short message if you like, then tap Send." },
-      { "stepNumber": 6, "title": "Photo sent!", "description": "Your photo is now on its way! It usually arrives within a few seconds if you have a good Wi-Fi connection." }
+      {
+        "stepNumber": 1,
+        "title": "Open your Photos app",
+        "description": "Find the Photos or Gallery app on your phone. Tap it. You will see all your photos."
+      },
+      {
+        "stepNumber": 2,
+        "title": "Find the photo you want to share",
+        "description": "Scroll through your photos to find the one you want to send. Tap it once to open it fully."
+      },
+      {
+        "stepNumber": 3,
+        "title": "Tap the Share button",
+        "description": "Look for a share icon — on iPhones it looks like a box with an arrow pointing up. On Android it looks like three dots connected by lines. Tap it."
+      },
+      {
+        "stepNumber": 4,
+        "title": "Choose where to send it",
+        "description": "A menu will appear showing apps like WhatsApp, Gmail, Messages. Tap the one you want to use to send the photo."
+      },
+      {
+        "stepNumber": 5,
+        "title": "Choose who to send it to",
+        "description": "Select the person from your contacts. Add a short message if you like, then tap Send."
+      },
+      {
+        "stepNumber": 6,
+        "title": "Photo sent!",
+        "description": "Your photo is now on its way! It usually arrives within a few seconds if you have a good Wi-Fi connection."
+      }
     ]
   },
   {
@@ -66,12 +162,36 @@
     "difficulty": "Intermediate",
     "description": "Ask AI assistants questions, get help writing, and learn anything you want.",
     "steps": [
-      { "stepNumber": 1, "title": "What is an AI assistant?", "description": "ChatGPT and Claude are like very knowledgeable helpers you can chat with. You can ask them anything — from recipes to medical questions to help writing a letter. They are available 24 hours a day." },
-      { "stepNumber": 2, "title": "Open the website", "description": "On your phone or computer, open your browser (Chrome or Safari). Type claude.ai or chat.openai.com in the address bar and press Go. You can also search 'Claude AI' or 'ChatGPT' in Google." },
-      { "stepNumber": 3, "title": "Create a free account (one time only)", "description": "The first time, you will need to create a free account using your email address. Tap 'Sign Up', enter your email and create a password. You only need to do this once." },
-      { "stepNumber": 4, "title": "Type your question", "description": "You will see a text box at the bottom of the screen. Tap it and type your question in plain, everyday language. For example: 'How do I remove a stain from a white shirt?' or 'Write a birthday message for my grandson.'" },
-      { "stepNumber": 5, "title": "Read the answer", "description": "Press Enter or tap the send button. The AI will type out an answer in a few seconds. Read it at your own pace — there is no hurry." },
-      { "stepNumber": 6, "title": "Ask follow-up questions", "description": "If something is not clear, just ask again! Try: 'Can you explain that more simply?' or 'Can you give me an example?' The AI is always patient and never minds if you ask the same thing multiple times." }
+      {
+        "stepNumber": 1,
+        "title": "What is an AI assistant?",
+        "description": "ChatGPT and Claude are like very knowledgeable helpers you can chat with. You can ask them anything — from recipes to medical questions to help writing a letter. They are available 24 hours a day."
+      },
+      {
+        "stepNumber": 2,
+        "title": "Open the website",
+        "description": "On your phone or computer, open your browser (Chrome or Safari). Type claude.ai or chat.openai.com in the address bar and press Go. You can also search 'Claude AI' or 'ChatGPT' in Google."
+      },
+      {
+        "stepNumber": 3,
+        "title": "Create a free account (one time only)",
+        "description": "The first time, you will need to create a free account using your email address. Tap 'Sign Up', enter your email and create a password. You only need to do this once."
+      },
+      {
+        "stepNumber": 4,
+        "title": "Type your question",
+        "description": "You will see a text box at the bottom of the screen. Tap it and type your question in plain, everyday language. For example: 'How do I remove a stain from a white shirt?' or 'Write a birthday message for my grandson.'"
+      },
+      {
+        "stepNumber": 5,
+        "title": "Read the answer",
+        "description": "Press Enter or tap the send button. The AI will type out an answer in a few seconds. Read it at your own pace — there is no hurry."
+      },
+      {
+        "stepNumber": 6,
+        "title": "Ask follow-up questions",
+        "description": "If something is not clear, just ask again! Try: 'Can you explain that more simply?' or 'Can you give me an example?' The AI is always patient and never minds if you ask the same thing multiple times."
+      }
     ]
   },
   {
@@ -81,12 +201,75 @@
     "difficulty": "Beginner",
     "description": "Protect your accounts with a password that is hard to guess but easy for you to remember.",
     "steps": [
-      { "stepNumber": 1, "title": "Why passwords matter", "description": "A password is like the key to your front door. If someone guesses it, they can access your email, bank, or social media. A strong password keeps your accounts safe." },
-      { "stepNumber": 2, "title": "What makes a strong password?", "description": "A strong password is: at least 8 characters long, uses a mix of letters and numbers, and does not use obvious information like your name or birthday." },
-      { "stepNumber": 3, "title": "Use a phrase you can remember", "description": "Think of 3 words that mean something to you, like: BlueSky Morning Coffee. Then add a number and symbol: BlueSkyMorning42! This is very strong and easy to remember." },
-      { "stepNumber": 4, "title": "Never share your password", "description": "Never tell your password to anyone — not a bank, not Microsoft, not your internet provider. Real companies never need to ask for your password. If someone asks, it is a scam." },
-      { "stepNumber": 5, "title": "Use different passwords for different accounts", "description": "Use a different password for your email, your bank, and Facebook. This way, if one account is hacked, the others are still safe." },
-      { "stepNumber": 6, "title": "Write it down safely", "description": "It is fine to write your password in a notebook kept at home — but do not write 'Facebook password' next to it. Just write the website initial or a hint only you understand. Keep the notebook in a safe place." }
+      {
+        "stepNumber": 1,
+        "title": "Why passwords matter",
+        "description": "A password is like the key to your front door. If someone guesses it, they can access your email, bank, or social media. A strong password keeps your accounts safe."
+      },
+      {
+        "stepNumber": 2,
+        "title": "What makes a strong password?",
+        "description": "A strong password is: at least 8 characters long, uses a mix of letters and numbers, and does not use obvious information like your name or birthday."
+      },
+      {
+        "stepNumber": 3,
+        "title": "Use a phrase you can remember",
+        "description": "Think of 3 words that mean something to you, like: BlueSky Morning Coffee. Then add a number and symbol: BlueSkyMorning42! This is very strong and easy to remember."
+      },
+      {
+        "stepNumber": 4,
+        "title": "Never share your password",
+        "description": "Never tell your password to anyone — not a bank, not Microsoft, not your internet provider. Real companies never need to ask for your password. If someone asks, it is a scam."
+      },
+      {
+        "stepNumber": 5,
+        "title": "Use different passwords for different accounts",
+        "description": "Use a different password for your email, your bank, and Facebook. This way, if one account is hacked, the others are still safe."
+      },
+      {
+        "stepNumber": 6,
+        "title": "Write it down safely",
+        "description": "It is fine to write your password in a notebook kept at home — but do not write 'Facebook password' next to it. Just write the website initial or a hint only you understand. Keep the notebook in a safe place."
+      }
+    ]
+  },
+  {
+    "id": "privacy",
+    "title": "Staying private online",
+    "icon": "🍪",
+    "difficulty": "Intermediate",
+    "description": "Learn what apps collect about you, what cookies are, and how to protect your personal information.",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "title": "What do apps know about you?",
+        "description": "Apps on your phone collect information like your location, what you search for, and what videos you watch. This is called 'data collection'. They use this to show you advertisements. It is legal but you have the right to limit it."
+      },
+      {
+        "stepNumber": 2,
+        "title": "What are 'cookies'?",
+        "description": "When you visit a website, it saves a small file on your phone called a 'cookie'. Cookies remember your preferences (like your language) but also track what you do online. When a website asks 'Accept cookies?' — you can say 'Only necessary cookies' to share less."
+      },
+      {
+        "stepNumber": 3,
+        "title": "How to check app permissions",
+        "description": "On Android: Go to Settings → Apps → Select an app → Permissions. On iPhone: Go to Settings → Scroll to the app. Here you can see if the app can access your location, camera, microphone, or contacts — and turn off what you don't want to share."
+      },
+      {
+        "stepNumber": 4,
+        "title": "Turn off location when not needed",
+        "description": "Many apps want to know where you are at all times. You can change this to 'Only while using the app' so they can't track you when the app is closed. Go to Settings → Location → choose the app → select 'While using'."
+      },
+      {
+        "stepNumber": 5,
+        "title": "What is safe to share online?",
+        "description": "Never share: your Aadhaar number, PAN card details, bank account number, OTPs, or passwords. Safe to share: your first name, your city, general interests. A good rule: if you would not write it on a postcard for anyone to read, don't share it online."
+      },
+      {
+        "stepNumber": 6,
+        "title": "The Aadhaar safety rule",
+        "description": "Your Aadhaar number is very sensitive. Only share it when legally required — like at a hospital or government office. Never share it on WhatsApp, email, or with strangers. You can also lock your Aadhaar biometrics at myaadhaar.uidai.gov.in to prevent misuse."
+      }
     ]
   }
 ]
