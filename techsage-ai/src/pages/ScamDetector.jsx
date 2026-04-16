@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { ShieldAlert, Building2, Gift, UserCircle, Zap, KeyRound, Mic, Square, Search, Loader2, CheckCircle } from 'lucide-react'
 import ClayCard from '../components/Card.jsx'
 import ClayButton from '../components/ClayButton.jsx'
 import ClayInput from '../components/ClayInput.jsx'
@@ -6,14 +7,13 @@ import VerdictCard from '../components/VerdictCard.jsx'
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition.js'
 import { useClaudeAPI } from '../hooks/useClaudeAPI.js'
 import { useSettings } from '../App.jsx'
-import { C, SHADOWS, RADIUS, FONT, GRAD } from '../tokens.js'
 
 const EXAMPLES = [
-  { icon: '🏦', text: 'URGENT: Your bank account has been suspended. Call 1-800-555-1234 immediately to unlock it.' },
-  { icon: '🎁', text: 'Congratulations! You have won a $1000 Amazon gift card. Click here to claim: bit.ly/win-now' },
-  { icon: '👴', text: 'This is your grandson. I am in trouble and need $500 in gift cards. Please do not tell anyone.' },
-  { icon: '⚡', text: 'Your electricity will be cut in 2 hours unless you pay Rs. 1500 via UPI now.' },
-  { icon: '🔢', text: 'Your OTP is 847291. Do NOT share this with anyone. If you did not request this, call us.' },
+  { Icon: Building2, text: 'URGENT: Your bank account has been suspended. Call 1-800-555-1234 immediately to unlock it.' },
+  { Icon: Gift, text: 'Congratulations! You have won a $1000 Amazon gift card. Click here to claim: bit.ly/win-now' },
+  { Icon: UserCircle, text: 'This is your grandson. I am in trouble and need $500 in gift cards. Please do not tell anyone.' },
+  { Icon: Zap, text: 'Your electricity will be cut in 2 hours unless you pay Rs. 1500 via UPI now.' },
+  { Icon: KeyRound, text: 'Your OTP is 847291. Do NOT share this with anyone. If you did not request this, call us.' },
 ]
 
 const SAFETY_TIPS = [
@@ -30,7 +30,7 @@ export default function ScamDetector() {
   const { isListening, start, stop, transcript } = useSpeechRecognition(language)
   const { sendMessage, loading, error } = useClaudeAPI()
 
-  React.useEffect(() => { if (transcript) setMessageText(transcript) }, [transcript])
+  useEffect(() => { if (transcript) setMessageText(transcript) }, [transcript])
 
   const handleCheck = async () => {
     if (!messageText.trim()) return
@@ -40,23 +40,19 @@ export default function ScamDetector() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="flex flex-col gap-6">
 
       {/* Header card */}
-      <ClayCard style={{ background: 'linear-gradient(135deg, rgba(254,226,226,0.5) 0%, rgba(255,255,255,0.72) 60%)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '64px', height: '64px', borderRadius: '50%',
-            background: 'linear-gradient(135deg, #F87171 0%, #DC2626 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '30px', flexShrink: 0, boxShadow: SHADOWS.button,
-            animation: 'clay-breathe 5s ease-in-out infinite',
-          }}>🛡️</div>
+      <ClayCard className="bg-gradient-to-br from-red-100/50 to-white/70">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-danger flex items-center justify-center text-white shrink-0 shadow-[var(--shadow-clay-button)] animate-clay-breathe">
+            <ShieldAlert size={32} strokeWidth={2.5} />
+          </div>
           <div>
-            <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`, fontWeight: '900', color: '#991B1B', marginBottom: '6px' }}>
+            <p className="font-heading font-black text-red-900 mb-1.5" style={{ fontSize: `${fontSize + 3}px` }}>
               {language === 'en' ? 'Scam Detector' : language === 'ta' ? 'மோசடி கண்டறிவி' : 'स्कैम डिटेक्टर'}
             </p>
-            <p style={{ fontSize: `${fontSize - 1}px`, color: C.muted, lineHeight: 1.7 }}>
+            <p className="text-muted leading-relaxed" style={{ fontSize: `${fontSize - 1}px` }}>
               {language === 'en'
                   ? 'Got a suspicious message? Paste or speak it below and I will check if it is safe.'
                   : language === 'ta'
@@ -69,7 +65,7 @@ export default function ScamDetector() {
 
       {/* Input card */}
       <ClayCard>
-        <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
+        <p className="font-heading font-extrabold text-ink mb-3.5" style={{ fontSize: `${fontSize - 1}px` }}>
           {language === 'en' ? 'Paste the suspicious message here:' : language === 'ta' ? 'சந்தேகமான செய்தியை ஒட்டவும்:' : 'संदिग्ध संदेश यहाँ पेस्ट करें:'}
         </p>
         <ClayInput
@@ -84,21 +80,21 @@ export default function ScamDetector() {
           multiline
           rows={4}
         />
-        <div style={{ display: 'flex', gap: '12px', marginTop: '16px', flexWrap: 'wrap' }}>
+        <div className="flex gap-3 mt-4 flex-wrap">
           <ClayButton
             variant={isListening ? 'danger' : 'ghost'}
             size="sm"
             onClick={isListening ? stop : start}
           >
-            {isListening ? '⏹ Stop speaking' : '🎤 Speak the message'}
+            {isListening ? <><Square size={16} fill="currentColor"/> Stop speaking</> : <><Mic size={16}/> Speak the message</>}
           </ClayButton>
           <ClayButton
             size="md"
             onClick={handleCheck}
             disabled={!messageText.trim() || loading}
-            style={{ flex: 1, minWidth: '160px' }}
+            className="flex-1 min-w-[160px]"
           >
-            {loading ? '⏳ Checking...' : '🔍 Check this message'}
+            {loading ? <><Loader2 size={18} className="animate-spin"/> Checking...</> : <><Search size={18}/> Check this message</>}
           </ClayButton>
           {messageText && (
             <ClayButton variant="secondary" size="sm" onClick={() => { setMessageText(''); setResult(null) }}>
@@ -109,8 +105,8 @@ export default function ScamDetector() {
       </ClayCard>
 
       {error && (
-        <ClayCard accent={C.amber} padding="18px">
-          <p style={{ fontSize: `${fontSize - 2}px`, color: '#78350F', fontFamily: FONT.heading, fontWeight: '700' }}>⚠️ {error}</p>
+        <ClayCard accent="#F59E0B" padding="p-4 md:p-5">
+          <p className="font-heading font-bold text-[#78350F]" style={{ fontSize: `${fontSize - 2}px` }}>⚠️ {error}</p>
         </ClayCard>
       )}
 
@@ -120,33 +116,32 @@ export default function ScamDetector() {
 
       {/* Example messages */}
       <ClayCard>
-        <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
+        <p className="font-heading font-extrabold text-ink mb-3.5" style={{ fontSize: `${fontSize - 1}px` }}>
           {language === 'en' ? '🧪 Try these example messages:' : language === 'ta' ? 'இந்த உதாரண செய்திகளை முயற்சிக்கவும்:' : '🧪 इन उदाहरण संदेशों को आज़माएं:'}
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div className="flex flex-col gap-2.5">
           {EXAMPLES.map((ex, i) => (
-            <ExampleChip key={i} icon={ex.icon} text={ex.text} fontSize={fontSize}
+            <ExampleChip key={i} Icon={ex.Icon} text={ex.text} fontSize={fontSize}
               onClick={() => { setMessageText(ex.text); setResult(null) }} />
           ))}
         </div>
       </ClayCard>
 
       {/* Safety tips */}
-      <ClayCard style={{ background: 'linear-gradient(135deg, rgba(209,250,229,0.5) 0%, rgba(255,255,255,0.72) 60%)' }}>
-        <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 1}px`, fontWeight: '800', color: '#065F46', marginBottom: '14px' }}>
-          🛡️ {language === 'en' ? 'Golden rules for staying safe:' : language === 'ta' ? 'பாதுகாப்பிற்கான பொன் விதிகள்:' : 'सुरक्षित रहने के सुनहरे नियम:'}
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <ClayCard className="bg-gradient-to-br from-emerald-50 to-white/70">
+        <div className="flex items-center gap-2 mb-3.5">
+          <ShieldAlert size={20} className="text-emerald-700" />
+          <p className="font-heading font-extrabold text-emerald-800" style={{ fontSize: `${fontSize - 1}px` }}>
+            {language === 'en' ? 'Golden rules for staying safe:' : language === 'ta' ? 'பாதுகாப்பிற்கான பொன் விதிகள்:' : 'सुरक्षित रहने के सुनहरे नियम:'}
+          </p>
+        </div>
+        <div className="flex flex-col gap-3">
           {SAFETY_TIPS.map((tip, i) => (
-            <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-              <div style={{
-                width: '26px', height: '26px', borderRadius: '50%',
-                background: 'linear-gradient(135deg, #34D399 0%, #059669 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '12px', color: '#fff', flexShrink: 0,
-                boxShadow: SHADOWS.button,
-              }}>✓</div>
-              <p style={{ fontSize: `${fontSize - 3}px`, color: '#065F46', lineHeight: 1.65 }}>{tip}</p>
+            <div key={i} className="flex gap-3 items-start">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shrink-0 shadow-sm mt-0.5">
+                <CheckCircle size={14} strokeWidth={3} />
+              </div>
+              <p className="text-emerald-900 leading-relaxed font-medium" style={{ fontSize: `${fontSize - 3}px` }}>{tip}</p>
             </div>
           ))}
         </div>
@@ -155,27 +150,24 @@ export default function ScamDetector() {
   )
 }
 
-function ExampleChip({ icon, text, fontSize, onClick }) {
+function ExampleChip({ Icon, text, fontSize, onClick }) {
   const [hovered, setHovered] = useState(false)
   return (
     <button
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={`
+        flex items-start gap-3 w-full rounded-2xl p-3.5 text-left cursor-pointer transition-all duration-200 ease-out
+        ${hovered ? 'bg-white/90 border-ocean/40 border-[1.5px]' : 'bg-[#EFEBF5] border-transparent border-[1.5px]'}
+      `}
       style={{
-        display: 'flex', alignItems: 'flex-start', gap: '12px',
-        background: hovered ? 'rgba(255,255,255,0.90)' : '#EFEBF5',
-        border: `1.5px solid ${hovered ? C.accent + '40' : 'transparent'}`,
-        borderRadius: RADIUS.md,
-        padding: '12px 16px',
-        cursor: 'pointer', textAlign: 'left',
-        boxShadow: hovered ? SHADOWS.card : SHADOWS.pressed,
+        boxShadow: hovered ? 'var(--shadow-clay-card)' : 'var(--shadow-clay-pressed)',
         transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-        transition: 'all 0.2s cubic-bezier(0.34,1.56,0.64,1)',
       }}
     >
-      <span style={{ fontSize: '20px', flexShrink: 0 }}>{icon}</span>
-      <span style={{ fontSize: `${fontSize - 4}px`, color: C.muted, lineHeight: 1.55, fontStyle: 'italic' }}>"{text}"</span>
+      <div className="shrink-0 text-muted mt-0.5"><Icon size={20} strokeWidth={2.5} /></div>
+      <span className="text-muted leading-relaxed italic" style={{ fontSize: `${fontSize - 4}px` }}>"{text}"</span>
     </button>
   )
 }

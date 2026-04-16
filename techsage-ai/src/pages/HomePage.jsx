@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
+import Spline from '@splinetool/react-spline' // 1. Import Spline!
+import { Bot, Mail, Video, Lock, Wifi, MessageSquare, ShieldAlert, Volume2, Square } from 'lucide-react'
 import MicButton from '../components/MicButton.jsx'
 import ClayCard from '../components/Card.jsx'
 import ClayButton from '../components/ClayButton.jsx'
@@ -10,36 +12,42 @@ import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis.js'
 import { useClaudeAPI } from '../hooks/useClaudeAPI.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useSettings } from '../App.jsx'
-import { C, SHADOWS, RADIUS, FONT, GRAD } from '../tokens.js'
 
 const QUICK_QUESTIONS = {
   en: [
-    { icon: '📧', text: 'How do I send an email?' },
-    { icon: '📹', text: 'How do I make a video call?' },
-    { icon: '🔐', text: 'How do I make a strong password?' },
-    { icon: '📶', text: 'How do I connect to Wi-Fi?' },
-    { icon: '🤖', text: 'What is ChatGPT and how do I use it?' },
-    { icon: '💳', text: 'How do I stay safe with UPI payments?' },
+    { Icon: Mail, text: 'How do I send an email?' },
+    { Icon: Video, text: 'How do I make a video call?' },
+    { Icon: Lock, text: 'How do I make a strong password?' },
+    { Icon: Wifi, text: 'How do I connect to Wi-Fi?' },
+    { Icon: MessageSquare, text: 'What is ChatGPT and how do I use it?' },
+    { Icon: ShieldAlert, text: 'How do I stay safe with UPI payments?' },
   ],
   ta: [
-    { icon: '📧', text: 'மின்னஞ்சல் எப்படி அனுப்புவது?' },
-    { icon: '📹', text: 'வீடியோ அழைப்பு எப்படி செய்வது?' },
-    { icon: '🔐', text: 'வலுவான கடவுச்சொல் என்ன?' },
-    { icon: '📶', text: 'Wi-Fi எப்படி இணைப்பது?' },
-    { icon: '🤖', text: 'ChatGPT என்னவென்று சொல்லுங்கள்' },
-    { icon: '💳', text: 'UPI பணம் செலுத்துவது எப்படி பாதுகாப்பாக இருக்கும்?' },
+    { Icon: Mail, text: 'மின்னஞ்சல் எப்படி அனுப்புவது?' },
+    { Icon: Video, text: 'வீடியோ அழைப்பு எப்படி செய்வது?' },
+    { Icon: Lock, text: 'வலுவான கடவுச்சொல் என்ன?' },
+    { Icon: Wifi, text: 'Wi-Fi எப்படி இணைப்பது?' },
+    { Icon: MessageSquare, text: 'ChatGPT என்னவென்று சொல்லுங்கள்' },
+    { Icon: ShieldAlert, text: 'UPI பணம் செலுத்துவது எப்படி பாதுகாப்பாக இருக்கும்?' },
   ],
   hi: [
-    { icon: '📧', text: 'ईमेल कैसे भेजें?' },
-    { icon: '📹', text: 'वीडियो कॉल कैसे करें?' },
-    { icon: '🔐', text: 'मजबूत पासवर्ड कैसे बनाएं?' },
-    { icon: '📶', text: 'Wi-Fi से कैसे जुड़ें?' },
-    { icon: '🤖', text: 'ChatGPT क्या है और इसे कैसे उपयोग करें?' },
-    { icon: '💳', text: 'UPI से पैसे भेजते समय सुरक्षित कैसे रहें?' },
+    { Icon: Mail, text: 'ईमेल कैसे भेजें?' },
+    { Icon: Video, text: 'वीडियो कॉल कैसे करें?' },
+    { Icon: Lock, text: 'मजबूत पासवर्ड कैसे बनाएं?' },
+    { Icon: Wifi, text: 'Wi-Fi से कैसे जुड़ें?' },
+    { Icon: MessageSquare, text: 'ChatGPT क्या है और इसे कैसे उपयोग करें?' },
+    { Icon: ShieldAlert, text: 'UPI से पैसे भेजते समय सुरक्षित कैसे रहें?' },
   ],
 }
 
-const ICON_GRADS = [GRAD.iconBlue, GRAD.iconPurple, GRAD.iconPink, GRAD.iconGreen, GRAD.iconAmber, GRAD.iconSky]
+const ICON_GRADS = [
+  'bg-gradient-to-br from-blue-400 to-blue-600',
+  'bg-gradient-to-br from-purple-400 to-purple-600',
+  'bg-gradient-to-br from-pink-400 to-pink-600',
+  'bg-gradient-to-br from-wave to-ocean',
+  'bg-gradient-to-br from-amber to-orange-500',
+  'bg-gradient-to-br from-sky-400 to-sky-600',
+]
 
 export default function HomePage() {
   const { fontSize, language } = useSettings()
@@ -80,7 +88,6 @@ export default function HomePage() {
     stopSpeak(); setInputText(''); resetMic()
     setConversation(prev => [...prev, { role: 'user', text: q }])
 
-    // Achievement tracking
     const newCount = (progress.question_count || 0) + 1
     increment('question_count')
     fireAchievement('question_count', newCount)
@@ -95,79 +102,71 @@ export default function HomePage() {
   const questions = QUICK_QUESTIONS[language] || QUICK_QUESTIONS.en
 
   const welcomeText = {
-    en: { heading: '👋 Welcome to TechSage AI!', body: 'Ask me anything about technology — no question is too simple! Speak using the microphone or type below.' },
-    ta: { heading: '👋 TechSage AI-க்கு வரவேற்கிறோம்!', body: 'தொழில்நுட்பம் பற்றி எதை வேண்டுமானாலும் கேளுங்கள். பேசவும் அல்லது தட்டச்சு செய்யவும்.' },
-    hi: { heading: '👋 TechSage AI में आपका स्वागत है!', body: 'तकनीक के बारे में कुछ भी पूछें — कोई भी सवाल छोटा नहीं होता! माइक से बोलें या नीचे टाइप करें।' },
+    en: { heading: 'Hi, I am TechSage!', body: 'Ask me anything about technology — no question is too simple! Tap the big microphone to speak, or type below.' },
+    ta: { heading: 'வணக்கம், நான் TechSage!', body: 'தொழில்நுட்பம் பற்றி எதை வேண்டுமானாலும் கேளுங்கள். பேச மைக்ரோஃபோனைத் தட்டவும் அல்லது கீழே தட்டச்சு செய்யவும்.' },
+    hi: { heading: 'नमस्ते, मैं TechSage हूँ!', body: 'तकनीक के बारे में कुछ भी पूछें! बोलने के लिए बड़े माइक्रोफ़ोन को टैप करें, या नीचे टाइप करें।' },
   }
   const wt = welcomeText[language] || welcomeText.en
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-      {/* Achievement toast */}
+    <div className="flex flex-col gap-6">
       <AchievementToast achievement={toast} onDismiss={() => setToast(null)} />
 
-      {/* ── Daily Tip ────────────────────────────────────────── */}
-      <DailyTip fontSize={fontSize} onRead={() => {
-        const newVal = (progress.tip_read || 0) + 1
-        increment('tip_read')
-        fireAchievement('tip_read', newVal)
-      }} />
-
-      {/* ── Welcome banner ───────────────────────────────────── */}
+      {/* ── 2. The New Hero Section ──────────────────────────── */}
       {conversation.length === 0 && (
-        <ClayCard style={{ background: 'linear-gradient(135deg,rgba(167,139,250,0.18) 0%,rgba(255,255,255,0.72) 60%)' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-            <div style={{
-              width: '56px', height: '56px', borderRadius: '50%',
-              background: GRAD.primaryBtn, flexShrink: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '28px', boxShadow: SHADOWS.button,
-              animation: 'clay-breathe 5s ease-in-out infinite',
-            }}>🤖</div>
-            <div>
-              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 3}px`, fontWeight: '900', color: C.accent, marginBottom: '8px', lineHeight: 1.2 }}>{wt.heading}</p>
-              <p style={{ fontSize: `${fontSize - 1}px`, color: C.muted, lineHeight: 1.75 }}>{wt.body}</p>
+        <ClayCard className="bg-gradient-to-br from-wave/10 to-white/80 border-[1.5px] border-wave/20">
+          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10">
+            
+            {/* Left: 3D Robot */}
+            <div className="w-full md:w-[45%] h-[260px] md:h-[320px] rounded-3xl overflow-hidden bg-wave/5 shadow-inner relative flex shrink-0">
+              <Spline scene="https://prod.spline.design/SIOftQoTZs8uMjks/scene.splinecode" />
+              {/* Optional overlay to prevent scrolling interference on mobile */}
+              <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_20px_rgba(59,130,246,0.1)] rounded-3xl"></div>
             </div>
+
+            {/* Right: Welcome & Massive Mic */}
+            <div className="w-full md:w-[55%] flex flex-col items-center md:items-start text-center md:text-left gap-6 pb-2 md:pb-0">
+              <div>
+                <h1 className="font-heading font-black text-ocean mb-3 leading-tight" style={{ fontSize: `${fontSize + 8}px` }}>
+                  {wt.heading}
+                </h1>
+                <p className="text-muted leading-relaxed font-medium" style={{ fontSize: `${fontSize}px` }}>
+                  {wt.body}
+                </p>
+              </div>
+              
+              {/* Extra large microphone for the hero! */}
+              <div className="pt-2">
+                <MicButton state={micState} onClick={handleMicClick} fontSize={fontSize + 4} />
+              </div>
+            </div>
+
           </div>
         </ClayCard>
       )}
 
-      {/* ── Conversation ─────────────────────────────────────── */}
+      {/* ── Conversation Bubbles ─────────────────────────────── */}
       {conversation.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex flex-col gap-4">
           {conversation.map((msg, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
-              <div style={{
-                maxWidth: '85%',
-                background: msg.role === 'user' ? GRAD.primaryBtn : 'rgba(255,255,255,0.82)',
-                color: msg.role === 'user' ? '#fff' : C.foreground,
-                borderRadius: msg.role === 'user'
-                  ? `${RADIUS.card} ${RADIUS.card} ${RADIUS.sm} ${RADIUS.card}`
-                  : `${RADIUS.card} ${RADIUS.card} ${RADIUS.card} ${RADIUS.sm}`,
-                padding: '16px 20px',
-                fontSize: `${fontSize - 1}px`,
-                lineHeight: 1.75,
-                boxShadow: SHADOWS.card,
-                backdropFilter: 'blur(12px)',
-                whiteSpace: 'pre-wrap',
-              }}>
+            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div 
+                className={`max-w-[85%] p-4 md:px-5 backdrop-blur-md whitespace-pre-wrap ${msg.role === 'user' ? 'bg-gradient-to-br from-wave to-ocean text-white rounded-[32px_32px_16px_32px]' : 'bg-white/80 text-ink rounded-[32px_32px_32px_16px]'}`}
+                style={{ fontSize: `${fontSize - 1}px`, lineHeight: 1.75, boxShadow: 'var(--shadow-clay-card)' }}
+              >
                 {msg.role === 'assistant' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: GRAD.primaryBtn, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', boxShadow: SHADOWS.button }}>🤖</div>
-                    <span style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 3}px`, fontWeight: '800', color: C.accent }}>TechSage</span>
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-wave to-ocean text-white flex items-center justify-center" style={{ boxShadow: 'var(--shadow-clay-button)' }}>
+                      <Bot size={16} strokeWidth={2.5} />
+                    </div>
+                    <span className="font-heading font-extrabold text-ocean" style={{ fontSize: `${fontSize - 3}px` }}>TechSage</span>
                   </div>
                 )}
                 {msg.text}
                 {msg.role === 'assistant' && (
-                  <button onClick={() => isSpeaking ? stopSpeak() : speak(msg.text, language)} style={{
-                    display: 'flex', alignItems: 'center', gap: '6px', marginTop: '12px',
-                    background: `${C.accent}12`, border: `1.5px solid ${C.accent}30`,
-                    borderRadius: RADIUS.btn, padding: '6px 14px',
-                    fontSize: `${fontSize - 4}px`, color: C.accent,
-                    cursor: 'pointer', fontFamily: FONT.heading, fontWeight: '700',
-                  }}>
-                    {isSpeaking ? '⏹ Stop' : '🔊 Read aloud'}
+                  <button onClick={() => isSpeaking ? stopSpeak() : speak(msg.text, language)} className="flex items-center gap-1.5 mt-3 bg-ocean/10 border-2 border-ocean/20 rounded-full px-3.5 py-1.5 text-ocean cursor-pointer font-heading font-bold hover:bg-ocean/20 transition-colors">
+                    {isSpeaking ? <Square fill="currentColor" size={14} /> : <Volume2 size={16} strokeWidth={2.5}/>}
+                    <span style={{ fontSize: `${fontSize - 4}px` }}>{isSpeaking ? 'Stop' : 'Read aloud'}</span>
                   </button>
                 )}
               </div>
@@ -175,10 +174,12 @@ export default function HomePage() {
           ))}
 
           {loading && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', background: 'rgba(255,255,255,0.72)', borderRadius: RADIUS.card, boxShadow: SHADOWS.card, backdropFilter: 'blur(12px)', width: 'fit-content' }}>
-              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: GRAD.primaryBtn, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', boxShadow: SHADOWS.button }}>🤖</div>
-              <span style={{ display: 'flex', gap: '5px' }}>
-                {[0,1,2].map(i => <span key={i} style={{ width: '9px', height: '9px', borderRadius: '50%', background: C.accent, animation: `dots 1.2s ease-in-out ${i*0.2}s infinite`, display: 'inline-block' }}/>)}
+            <div className="flex items-center gap-3 p-4 bg-white/70 rounded-3xl backdrop-blur-md w-fit" style={{ boxShadow: 'var(--shadow-clay-card)' }}>
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-wave to-ocean text-white flex items-center justify-center" style={{ boxShadow: 'var(--shadow-clay-button)' }}>
+                <Bot size={16} strokeWidth={2.5} />
+              </div>
+              <span className="flex gap-1.5">
+                {[0,1,2].map(i => <span key={i} className="w-2.5 h-2.5 rounded-full bg-ocean animate-[dots_1.2s_ease-in-out_infinite]" style={{ animationDelay: `${i*0.2}s` }}/>)}
               </span>
             </div>
           )}
@@ -186,19 +187,26 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Error */}
       {(micError || apiError) && (
-        <ClayCard accent={C.amber} padding="18px">
-          <p style={{ fontSize: `${fontSize - 2}px`, color: '#78350F', fontFamily: FONT.heading, fontWeight: '700' }}>⚠️ {micError || apiError}</p>
+        <ClayCard accent="#F59E0B" padding="p-4 md:p-5">
+          <p className="font-heading font-bold text-[#78350F]" style={{ fontSize: `${fontSize - 2}px` }}>⚠️ {micError || apiError}</p>
         </ClayCard>
       )}
 
-      {/* ── Mic + input card ─────────────────────────────────── */}
-      <ClayCard>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '22px' }}>
-          <MicButton state={micState} onClick={handleMicClick} fontSize={fontSize} />
-          {!isSupported && <p style={{ fontSize: `${fontSize - 4}px`, color: C.muted, textAlign: 'center' }}>Voice input not available — please type below.</p>}
-          <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+      {/* ── Input Box (Always Visible) ───────────────────────── */}
+      <ClayCard padding="p-5">
+        <div className="flex flex-col gap-4">
+          
+          {/* If they are in a conversation, show a mini mic button here since the hero mic is gone */}
+          {conversation.length > 0 && (
+             <div className="flex justify-center pb-2">
+               <MicButton state={micState} onClick={handleMicClick} fontSize={fontSize - 2} />
+             </div>
+          )}
+
+          {!isSupported && <p className="text-muted text-center" style={{ fontSize: `${fontSize - 4}px` }}>Voice input not available — please type below.</p>}
+          
+          <div className="flex gap-2.5 w-full">
             <ClayInput
               inputRef={inputRef}
               value={inputText}
@@ -209,11 +217,11 @@ export default function HomePage() {
               style={{ flex: 1 }}
             />
             <ClayButton onClick={() => handleSubmit()} disabled={!inputText.trim() || loading} size="md">
-              Send ↗
+              Send
             </ClayButton>
           </div>
           {requestsRemaining < 5 && (
-            <p style={{ fontSize: `${fontSize - 5}px`, color: C.muted, fontFamily: FONT.heading, fontWeight: '600' }}>
+            <p className="text-muted font-heading font-semibold text-center" style={{ fontSize: `${fontSize - 5}px` }}>
               {requestsRemaining} question{requestsRemaining !== 1 ? 's' : ''} remaining this session
             </p>
           )}
@@ -223,22 +231,34 @@ export default function HomePage() {
       {/* ── Quick questions ───────────────────────────────────── */}
       {conversation.length === 0 && (
         <div>
-          <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 2}px`, fontWeight: '800', color: C.foreground, marginBottom: '14px' }}>
+          <p className="font-heading font-extrabold text-ink mb-3.5 pl-2" style={{ fontSize: `${fontSize - 2}px` }}>
             {language === 'hi' ? 'सामान्य सवाल — टैप करके पूछें:' : language === 'ta' ? 'பொதுவான கேள்விகள் — தட்டவும்:' : 'Common questions — tap to ask:'}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+          <div className="flex flex-wrap gap-3">
             {questions.map((q, i) => (
-              <QuickChip key={i} icon={q.icon} text={q.text} gradient={ICON_GRADS[i]} fontSize={fontSize}
+              <QuickChip key={i} Icon={q.Icon} text={q.text} gradientClass={ICON_GRADS[i]} fontSize={fontSize}
                 onClick={() => handleSubmit(q.text)} />
             ))}
           </div>
         </div>
       )}
+
+      {/* ── Daily Tip (Moved to the bottom for better layout) ── */}
+      {conversation.length === 0 && (
+        <div className="mt-2">
+          <DailyTip fontSize={fontSize} onRead={() => {
+            const newVal = (progress.tip_read || 0) + 1
+            increment('tip_read')
+            fireAchievement('tip_read', newVal)
+          }} />
+        </div>
+      )}
+
     </div>
   )
 }
 
-function QuickChip({ icon, text, gradient, fontSize, onClick }) {
+function QuickChip({ Icon, text, gradientClass, fontSize, onClick }) {
   const [hovered, setHovered] = useState(false)
   const [pressed, setPressed] = useState(false)
   return (
@@ -248,20 +268,20 @@ function QuickChip({ icon, text, gradient, fontSize, onClick }) {
       onMouseLeave={() => { setHovered(false); setPressed(false) }}
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
+      className={`
+        flex items-center gap-2.5 rounded-2xl px-4 py-2.5 text-ink cursor-pointer font-body font-medium leading-snug backdrop-blur-md border-[1.5px]
+        transition-all duration-200 ease-out
+        ${hovered ? 'bg-white/90 border-ocean/20' : 'bg-white/70 border-transparent'}
+        ${pressed ? 'scale-95' : hovered ? '-translate-y-1' : 'translate-y-0'}
+      `}
       style={{
-        display: 'flex', alignItems: 'center', gap: '8px',
-        background: hovered ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.72)',
-        border: `1.5px solid ${C.accent}22`,
-        borderRadius: RADIUS.md, padding: '10px 16px',
-        fontSize: `${fontSize - 3}px`, color: C.foreground,
-        cursor: 'pointer', fontFamily: FONT.body, fontWeight: '500', lineHeight: 1.4,
-        boxShadow: pressed ? SHADOWS.pressed : hovered ? SHADOWS.cardHover : SHADOWS.card,
-        transform: pressed ? 'scale(0.95)' : hovered ? 'translateY(-3px)' : 'translateY(0)',
-        transition: 'all 0.2s cubic-bezier(0.34,1.56,0.64,1)',
-        backdropFilter: 'blur(10px)',
+        fontSize: `${fontSize - 3}px`,
+        boxShadow: pressed ? 'var(--shadow-clay-pressed)' : hovered ? 'var(--shadow-clay-card-hover)' : 'var(--shadow-clay-card)',
       }}
     >
-      <span style={{ width: '28px', height: '28px', borderRadius: '50%', background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0, boxShadow: '2px 2px 6px rgba(0,0,0,0.15)' }}>{icon}</span>
+      <span className={`w-7 h-7 rounded-full text-white flex items-center justify-center shrink-0 shadow-md ${gradientClass}`}>
+        <Icon size={14} strokeWidth={2.5} />
+      </span>
       {text}
     </button>
   )

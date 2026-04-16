@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+// 1. Import our new beautiful icons!
+import { Bot, Home, ShieldCheck, Target, BookOpen, Award, ChevronDown } from 'lucide-react'
+
 import './clay.css'
 import ClayBlobs from './components/ClayBlobs.jsx'
 import HomePage from './pages/HomePage.jsx'
@@ -18,43 +21,16 @@ const LANGUAGES = [
   { code: 'hi', label: 'हिंदी', full: 'Hindi' },
 ]
 
-function SizeBtn({ label, onClick }) {
-  const [pressed, setPressed] = useState(false)
-  return (
-    <button onClick={onClick}
-      onMouseDown={() => setPressed(true)}
-      onMouseUp={() => setPressed(false)}
-      onMouseLeave={() => setPressed(false)}
-      style={{
-        background: 'rgba(255,255,255,0.18)', border: '1.5px solid rgba(255,255,255,0.35)',
-        color: '#fff', borderRadius: RADIUS.btn, width: '40px', height: '40px',
-        fontSize: '14px', cursor: 'pointer', fontFamily: FONT.heading, fontWeight: '800',
-        transition: 'all 0.15s',
-        transform: pressed ? 'scale(0.90)' : 'scale(1)',
-        boxShadow: pressed ? 'inset 4px 4px 8px rgba(0,0,0,0.15)' : '4px 4px 10px rgba(0,0,0,0.15)',
-      }}>{label}</button>
-  )
-}
-
-function NavTab({ to, icon, label }) {
-  const [hovered, setHovered] = useState(false)
+// 2. Updated NavTab to handle Lucide Icon components
+function NavTab({ to, icon: Icon, label }) {
   return (
     <NavLink to={to} end={to === '/'}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={({ isActive }) => ({
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        padding: '10px 14px', textDecoration: 'none',
-        color: isActive ? C.accent : C.muted,
-        borderBottom: isActive ? `3px solid ${C.accent}` : '3px solid transparent',
-        fontFamily: FONT.heading, fontWeight: isActive ? '800' : '600',
-        fontSize: '11px', whiteSpace: 'nowrap', gap: '3px',
-        transition: 'all 0.2s', minWidth: '64px',
-        background: isActive ? `linear-gradient(180deg,${C.accent}10 0%,transparent 100%)` : hovered ? `${C.accent}06` : 'transparent',
-        transform: isActive || hovered ? 'translateY(-1px)' : 'translateY(0)',
-      })}
+      className={({ isActive }) =>
+        `flex flex-col items-center gap-1.5 px-4 py-3 text-xs font-bold whitespace-nowrap transition border-b-2 min-w-16
+        ${isActive ? 'border-ocean text-ocean bg-green-50' : 'border-transparent text-gray-400 hover:text-ocean hover:bg-gray-50'}`
+      }
     >
-      <span style={{ fontSize: '18px' }}>{icon}</span>
+      <Icon size={22} strokeWidth={2.5} />
       <span>{label}</span>
     </NavLink>
   )
@@ -82,87 +58,71 @@ export default function App() {
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
 
           {/* ── Header ─────────────────────────────────────────── */}
-          <header style={{
-            background: 'linear-gradient(135deg,#5B21B6 0%,#7C3AED 60%,#A21CAF 100%)',
-            padding: '10px 16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            flexWrap: 'wrap', gap: '10px',
-            boxShadow: '0 4px 24px rgba(124,58,237,0.35)',
-            position: 'sticky', top: 0, zIndex: 100,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(255,255,255,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', boxShadow: '4px 4px 12px rgba(0,0,0,0.15)', animation: 'clay-breathe 5s ease-in-out infinite' }}>🤖</div>
-              <div>
-                <div style={{ fontFamily: FONT.heading, fontWeight: '900', fontSize: '19px', color: '#fff', letterSpacing: '-0.3px' }}>TechSage AI</div>
-                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', marginTop: '-1px' }}>
-                  {language === 'ta' ? 'உங்கள் தொழில்நுட்ப உதவியாளர்' : language === 'hi' ? 'आपका तकनीकी सहायक' : 'Your friendly technology helper'}
+          <header className="bg-gradient-to-r from-wave to-ocean sticky top-0 z-50 shadow-md">
+            <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
+              
+              {/* Logo */}
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center shadow-inner">
+                  {/* 3. Replaced emoji with Bot icon */}
+                  <Bot size={26} className="text-white" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <div className="text-white font-bold text-lg leading-tight">TechSage AI</div>
+                  <div className="text-white/75 text-xs font-medium">
+                    {language === 'ta' ? 'உங்கள் தொழில்நுட்ப உதவியாளர்' : language === 'hi' ? 'आपका तकनीकी सहायक' : 'Your friendly technology helper'}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <SizeBtn label="A−" onClick={() => setFontSize(f => Math.max(f - 2, 14))} />
-              <SizeBtn label="A+" onClick={() => setFontSize(f => Math.min(f + 2, 26))} />
-
-              {/* Language selector */}
-              <div style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setLangMenuOpen(o => !o)}
-                  style={{
-                    background: 'rgba(255,255,255,0.18)', border: '1.5px solid rgba(255,255,255,0.35)',
-                    color: '#fff', borderRadius: RADIUS.btn, padding: '0 14px', height: '40px',
-                    fontSize: '13px', cursor: 'pointer', fontFamily: FONT.heading, fontWeight: '800',
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                  }}
-                >
-                  {currentLang?.label} ▾
+              {/* Controls */}
+              <div className="flex items-center gap-2">
+                <button onClick={() => setFontSize(f => Math.max(f - 2, 14))}
+                  className="w-10 h-10 rounded-full bg-white/20 text-white font-bold text-sm hover:bg-white/30 transition shadow-inner">
+                  A−
                 </button>
-                {langMenuOpen && (
-                  <div style={{
-                    position: 'absolute', top: '48px', right: 0,
-                    background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)',
-                    borderRadius: RADIUS.md, boxShadow: SHADOWS.deep,
-                    overflow: 'hidden', zIndex: 200, minWidth: '130px',
-                    border: `1px solid ${C.accent}20`,
-                  }}>
-                    {LANGUAGES.map(l => (
-                      <button key={l.code}
-                        onClick={() => { setLanguage(l.code); setLangMenuOpen(false) }}
-                        style={{
-                          display: 'block', width: '100%', padding: '12px 16px',
-                          background: language === l.code ? `${C.accent}12` : 'transparent',
-                          border: 'none', cursor: 'pointer', textAlign: 'left',
-                          fontFamily: FONT.heading, fontSize: '14px', fontWeight: language === l.code ? '800' : '600',
-                          color: language === l.code ? C.accent : C.foreground,
-                        }}
-                      >
-                        {l.label} — {l.full}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <button onClick={() => setFontSize(f => Math.min(f + 2, 26))}
+                  className="w-10 h-10 rounded-full bg-white/20 text-white font-bold text-sm hover:bg-white/30 transition shadow-inner">
+                  A+
+                </button>
+
+                {/* Language selector */}
+                <div className="relative">
+                  <button onClick={() => setLangMenuOpen(o => !o)}
+                    className="h-10 px-4 rounded-full bg-white/20 text-white font-bold text-sm flex items-center gap-1.5 hover:bg-white/30 transition shadow-inner">
+                    {currentLang?.label} 
+                    <ChevronDown size={16} strokeWidth={3} />
+                  </button>
+                  {langMenuOpen && (
+                    <div className="absolute right-0 top-12 bg-white rounded-2xl shadow-xl overflow-hidden z-50 min-w-36 border border-gray-100">
+                      {LANGUAGES.map(l => (
+                        <button key={l.code}
+                          onClick={() => { setLanguage(l.code); setLangMenuOpen(false) }}
+                          className={`block w-full px-4 py-3 text-left text-sm font-bold hover:bg-gray-50 transition ${language === l.code ? 'text-ocean' : 'text-gray-500'}`}>
+                          {l.label} — {l.full}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </header>
 
           {/* ── Nav ────────────────────────────────────────────── */}
-          <nav role="navigation" aria-label="Main navigation" style={{
-            background: 'rgba(255,255,255,0.80)', backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            borderBottom: `1px solid ${C.accent}18`,
-            display: 'flex', overflowX: 'auto',
-            boxShadow: '0 4px 20px rgba(124,58,237,0.08)',
-            position: 'sticky', top: '64px', zIndex: 99,
-          }}>
-            <NavTab to="/"           icon="🏠" label={NL[0]} />
-            <NavTab to="/scam-check" icon="🛡️" label={NL[1]} />
-            <NavTab to="/quiz"       icon="🎯" label={NL[2]} />
-            <NavTab to="/tutorials"  icon="📚" label={NL[3]} />
-            <NavTab to="/achievements" icon="🏅" label={NL[4]} />
+          <nav className="bg-white sticky top-[68px] z-40 border-b border-gray-200 shadow-sm">
+            <div className="max-w-4xl mx-auto flex overflow-x-auto hide-scrollbar">
+              {/* 4. Pass the Lucide components directly as props */}
+              <NavTab to="/"             icon={Home}        label={NL[0]} />
+              <NavTab to="/scam-check"   icon={ShieldCheck} label={NL[1]} />
+              <NavTab to="/quiz"         icon={Target}      label={NL[2]} />
+              <NavTab to="/tutorials"    icon={BookOpen}    label={NL[3]} />
+              <NavTab to="/achievements" icon={Award}       label={NL[4]} />
+            </div>
           </nav>
 
           {/* ── Content ────────────────────────────────────────── */}
-          <main style={{ flex: 1, padding: '24px 16px 40px', maxWidth: '880px', width: '100%', margin: '0 auto' }}>
+          <main className="flex-1 px-4 py-6 md:py-8 max-w-4xl w-full mx-auto">
             <Routes>
               <Route path="/"             element={<HomePage />} />
               <Route path="/scam-check"   element={<ScamDetector />} />
@@ -173,14 +133,8 @@ export default function App() {
           </main>
 
           {/* ── Footer ─────────────────────────────────────────── */}
-          <footer style={{
-            textAlign: 'center', padding: '16px',
-            fontSize: '12px', color: C.muted,
-            background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(12px)',
-            borderTop: `1px solid ${C.accent}15`,
-            fontFamily: FONT.heading, fontWeight: '600',
-          }}>
-            Made with ❤️ for <strong style={{ color: C.accent }}>GenLink Hacks 2026</strong> · Helping seniors feel confident with technology
+          <footer className="bg-ocean text-white/90 text-center p-4 text-sm font-medium">
+            Made with ❤️ for <strong>GenLink Hacks 2026</strong> · Helping seniors feel confident with technology
           </footer>
         </div>
       </BrowserRouter>
