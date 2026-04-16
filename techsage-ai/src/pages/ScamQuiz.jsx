@@ -8,10 +8,10 @@ import scenarios from '../data/quizScenarios.json'
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5) }
 
-function SafeImg({ src, alt, style = {} }) {
+function SafeImg({ src, alt, style = {}, className = "" }) {
   const [failed, setFailed] = useState(false)
   if (failed) return null
-  return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ display: 'block', ...style }} />
+  return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ display: 'block', ...style }} className={className} />
 }
 
 export default function ScamQuiz() {
@@ -90,71 +90,41 @@ export default function ScamQuiz() {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Progress header */}
-      <ClayCard padding="p-5 md:p-6">
-        <div className="flex justify-between items-center flex-wrap gap-3 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-wave to-ocean text-white flex items-center justify-center shadow-sm">
-              <Target size={20} strokeWidth={2.5} />
-            </div>
-            <div>
-              <p className="font-heading font-black text-ink" style={{ fontSize: `${fontSize + 2}px` }}>Scam Practice</p>
-              <p className="text-muted font-heading font-semibold" style={{ fontSize: `${fontSize - 3}px` }}>
-                Question {index + 1} of {shuffled.length}
-              </p>
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-wave to-ocean rounded-2xl px-5 py-3 text-center shadow-[var(--shadow-clay-button)]">
-            <p className="text-white/85 font-heading font-bold" style={{ fontSize: `${fontSize - 4}px` }}>Score</p>
-            <p className="font-heading font-black text-white" style={{ fontSize: `${fontSize + 6}px` }}>{score}</p>
-          </div>
-        </div>
-        <div className="bg-[#EFEBF5] rounded-full h-2.5 w-full overflow-hidden shadow-[var(--shadow-clay-pressed)]">
-          <div 
-            className="h-full bg-gradient-to-br from-wave to-ocean rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${(index / shuffled.length) * 100}%` }}
-          />
-        </div>
-      </ClayCard>
 
-      {/* ══ HEADER — real speaker + tutor illustration ════════
-          Dr. Mujumdar (founder) with mic + tutor beside laptop
-          Sets the "learning with guidance" context             */}
-      <div style={{
-        borderRadius: RADIUS.card,
-        background: 'rgba(255,255,255,0.80)',
-        backdropFilter: 'blur(16px)',
-        boxShadow: SHADOWS.card,
-        overflow: 'hidden',
-      }}>
+      {/* ══ HEADER — Translated to Tailwind ════════════════════ */}
+      <div className="rounded-[32px] bg-white/80 backdrop-blur-md overflow-hidden" style={{ boxShadow: 'var(--shadow-clay-card)' }}>
+        
         {/* Real photo of event speaker at top */}
-        <div style={{ width: '100%', height: '80px', overflow: 'hidden', position: 'relative' }}>
+        <div className="w-full h-20 overflow-hidden relative">
           <SafeImg
             src="/images/real-event-audience.png"
             alt="Seniors attending the digital safety workshop at Symbiosis College, Pune"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%' }}
+            className="w-full h-full object-cover object-[center_40%]"
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(255,255,255,0.88) 100%)' }} />
-          <div style={{ position: 'absolute', bottom: '8px', left: '16px' }}>
-            <span style={{ fontFamily: FONT.heading, fontSize: '11px', fontWeight: '700', color: C.accent, background: 'rgba(255,255,255,0.9)', padding: '3px 10px', borderRadius: '20px' }}>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/90" />
+          <div className="absolute bottom-2 left-4">
+            <span className="font-heading text-[11px] font-bold text-ocean bg-white/90 px-2.5 py-1 rounded-full shadow-sm">
               📸 Symbiosis Digital Literacy Event — 70+ seniors attended
             </span>
           </div>
         </div>
 
-        <div style={{ padding: '16px 20px 20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
+        <div className="p-4 px-5 pb-5">
+          <div className="flex justify-between items-center flex-wrap gap-2.5 mb-3.5">
             <div>
-              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 2}px`, fontWeight: '900', color: C.foreground }}>🎯 Scam Practice Quiz</p>
-              <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, fontFamily: FONT.heading, fontWeight: '600' }}>Question {index + 1} of {shuffled.length}</p>
+              <p className="font-heading font-black text-ink" style={{ fontSize: `${fontSize + 2}px` }}>🎯 Scam Practice Quiz</p>
+              <p className="font-heading font-semibold text-muted" style={{ fontSize: `${fontSize - 3}px` }}>Question {index + 1} of {shuffled.length}</p>
             </div>
-            <div style={{ background: GRAD.primaryBtn, borderRadius: RADIUS.md, padding: '10px 18px', textAlign: 'center', boxShadow: SHADOWS.button }}>
-              <p style={{ fontSize: `${fontSize - 4}px`, color: 'rgba(255,255,255,0.85)', fontFamily: FONT.heading, fontWeight: '700' }}>Score</p>
-              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 6}px`, fontWeight: '900', color: '#fff' }}>{score}</p>
+            <div className="bg-gradient-to-br from-wave to-ocean rounded-2xl px-4 py-2.5 text-center shadow-[var(--shadow-clay-button)]">
+              <p className="font-heading font-bold text-white/85" style={{ fontSize: `${fontSize - 4}px` }}>Score</p>
+              <p className="font-heading font-black text-white" style={{ fontSize: `${fontSize + 6}px` }}>{score}</p>
             </div>
           </div>
-          <div style={{ background: '#EFEBF5', borderRadius: '999px', height: '10px', overflow: 'hidden', boxShadow: SHADOWS.pressed }}>
-            <div style={{ width: `${(index / shuffled.length) * 100}%`, height: '100%', background: GRAD.primaryBtn, borderRadius: '999px', transition: 'width 0.5s cubic-bezier(0.34,1.56,0.64,1)' }} />
+          <div className="bg-[#EFEBF5] rounded-full h-2.5 w-full overflow-hidden shadow-[var(--shadow-clay-pressed)]">
+            <div 
+              className="h-full bg-gradient-to-br from-wave to-ocean rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(index / shuffled.length) * 100}%` }}
+            />
           </div>
         </div>
       </div>
@@ -247,8 +217,8 @@ export default function ScamQuiz() {
               )}
             </div>
             {/* Tutor illustration beside feedback */}
-            <div style={{ flexShrink: 0, opacity: 0.75 }}>
-              <SafeImg src="/images/illus-tutor-laptop.png" alt="A volunteer helping a senior understand technology" style={{ width: '72px', height: '80px', objectFit: 'contain' }} />
+            <div className="shrink-0 opacity-75 hidden sm:block">
+              <SafeImg src="/images/illus-tutor-laptop.png" alt="A volunteer helping a senior understand technology" className="w-[72px] h-[80px] object-contain" />
             </div>
           </div>
           <div className="mt-5">

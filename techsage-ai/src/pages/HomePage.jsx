@@ -119,7 +119,7 @@ export default function HomePage() {
             
             {/* Left: 3D Robot */}
             <div className="w-full md:w-[45%] h-[260px] md:h-[320px] rounded-3xl overflow-hidden bg-wave/5 shadow-inner relative flex shrink-0">
-              <Spline scene="https://prod.spline.design/w7lxHsQe7MGbgkv6/scene.splinecode" />
+              <Spline scene="https://prod.spline.design/SIOftQoTZs8uMjks/scene.splinecode" />
               <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_20px_rgba(59,130,246,0.1)] rounded-3xl"></div>
             </div>
 
