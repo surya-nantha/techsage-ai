@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { SHADOWS, RADIUS, C, FONT } from '../tokens.js'
 
 export default function ClayInput({
   value,
@@ -10,28 +9,9 @@ export default function ClayInput({
   multiline = false,
   rows = 5,
   inputRef,
-  style = {},
+  className = "",
 }) {
   const [focused, setFocused] = useState(false)
-
-  const base = {
-    width: '100%',
-    padding: '16px 20px',
-    borderRadius: RADIUS.md,
-    border: focused ? `2px solid ${C.accentLight}` : '2px solid transparent',
-    background: focused ? '#fff' : '#EFEBF5',
-    color: C.foreground,
-    fontFamily: FONT.body,
-    fontSize: `${fontSize}px`,
-    lineHeight: 1.6,
-    outline: 'none',
-    resize: multiline ? 'vertical' : 'none',
-    boxShadow: focused
-      ? `0 0 0 4px ${C.accent}22, ${SHADOWS.card}`
-      : SHADOWS.pressed,
-    transition: 'all 0.22s ease',
-    ...style,
-  }
 
   const sharedProps = {
     value,
@@ -40,11 +20,22 @@ export default function ClayInput({
     placeholder,
     onFocus: () => setFocused(true),
     onBlur:  () => setFocused(false),
-    style: base,
+    className: `
+      w-full px-5 py-4 rounded-[24px] text-ink font-body leading-relaxed outline-none
+      transition-all duration-200 ease-out
+      ${focused ? 'bg-white border-2 border-wave' : 'bg-[#EFEBF5] border-2 border-transparent'}
+      ${className}
+    `,
+    style: {
+      fontSize: `${fontSize}px`,
+      boxShadow: focused
+        ? '0 0 0 4px rgba(59, 130, 246, 0.2), var(--shadow-clay-card)' // Now Wave Blue!
+        : 'var(--shadow-clay-pressed)',
+    }
   }
 
   if (multiline) {
-    return <textarea rows={rows} {...sharedProps} />
+    return <textarea ref={inputRef} rows={rows} className="resize-y" {...sharedProps} />
   }
 
   return <input ref={inputRef} type="text" {...sharedProps} />

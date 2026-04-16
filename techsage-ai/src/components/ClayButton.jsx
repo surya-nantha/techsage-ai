@@ -1,42 +1,28 @@
 import React, { useState } from 'react'
-import { SHADOWS, RADIUS, GRAD, C, FONT } from '../tokens.js'
 
-/**
- * ClayButton variants: 'primary' | 'secondary' | 'ghost' | 'danger'
- * Sizes: 'sm' | 'md' | 'lg'
- */
+// Mapped directly to your official color palette
 const VARIANT_STYLES = {
   primary: {
-    background:  GRAD.primaryBtn,
-    color:       '#fff',
-    border:      'none',
+    baseClass: 'bg-gradient-to-br from-wave to-ocean text-white border-none',
   },
   secondary: {
-    background:  '#fff',
-    color:       C.foreground,
-    border:      'none',
+    baseClass: 'bg-white text-ink border-none',
   },
   ghost: {
-    background:  'transparent',
-    color:       C.accent,
-    border:      `2px solid ${C.accent}33`,
+    baseClass: 'bg-transparent text-ocean border-2 border-ocean/30',
   },
   danger: {
-    background:  'linear-gradient(135deg, #F87171 0%, #DC2626 100%)',
-    color:       '#fff',
-    border:      'none',
+    baseClass: 'bg-gradient-to-br from-red-400 to-danger text-white border-none',
   },
   success: {
-    background:  'linear-gradient(135deg, #34D399 0%, #059669 100%)',
-    color:       '#fff',
-    border:      'none',
+    baseClass: 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white border-none',
   },
 }
 
 const SIZE_STYLES = {
-  sm: { height: '44px', padding: '0 18px', fontSize: '14px' },
-  md: { height: '56px', padding: '0 28px', fontSize: '16px' },
-  lg: { height: '64px', padding: '0 36px', fontSize: '18px' },
+  sm: { height: 'h-[44px]', padding: 'px-4', fontSize: 'text-sm' },
+  md: { height: 'h-[56px]', padding: 'px-7', fontSize: 'text-base' },
+  lg: { height: 'h-[64px]', padding: 'px-9', fontSize: 'text-lg' },
 }
 
 export default function ClayButton({
@@ -45,7 +31,7 @@ export default function ClayButton({
   variant = 'primary',
   size = 'md',
   disabled = false,
-  style = {},
+  className = "",
   fullWidth = false,
   type = 'button',
 }) {
@@ -66,36 +52,22 @@ export default function ClayButton({
       onMouseUp={() => setPressed(false)}
       onTouchStart={() => !disabled && setPressed(true)}
       onTouchEnd={() => setPressed(false)}
+      className={`
+        inline-flex items-center justify-center gap-2 rounded-[20px] font-heading font-extrabold tracking-wide select-none outline-none
+        transition-all duration-200 ease-out
+        ${fullWidth ? 'w-full' : 'w-auto'}
+        ${s.height} ${s.padding} ${s.fontSize}
+        ${v.baseClass}
+        ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+        ${pressed ? 'scale-[0.92] translate-y-0' : hovered ? '-translate-y-1' : 'translate-y-0 scale-100'}
+        ${className}
+      `}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '8px',
-        width: fullWidth ? '100%' : 'auto',
-        height: s.height,
-        padding: s.padding,
-        borderRadius: RADIUS.btn,
-        fontFamily: FONT.heading,
-        fontSize: s.fontSize,
-        fontWeight: '800',
-        letterSpacing: '0.3px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1,
-        userSelect: 'none',
-        outline: 'none',
-        transition: 'all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1)',
         boxShadow: pressed
-          ? SHADOWS.pressed
+          ? 'var(--shadow-clay-pressed)'
           : hovered
-          ? SHADOWS.buttonHover
-          : SHADOWS.button,
-        transform: pressed
-          ? 'scale(0.92) translateY(0)'
-          : hovered
-          ? 'translateY(-4px)'
-          : 'translateY(0) scale(1)',
-        ...v,
-        ...style,
+          ? 'var(--shadow-clay-button-hover)'
+          : 'var(--shadow-clay-button)',
       }}
     >
       {children}

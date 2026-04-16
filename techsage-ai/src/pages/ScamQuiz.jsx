@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
+import { Trophy, ThumbsUp, Award, Target, Volume2, Square, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
 import ClayCard from '../components/Card.jsx'
 import ClayButton from '../components/ClayButton.jsx'
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis.js'
 import { useSettings } from '../App.jsx'
-import { C, SHADOWS, RADIUS, FONT, GRAD } from '../tokens.js'
 import scenarios from '../data/quizScenarios.json'
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5) }
 
-function SafeImg({ src, alt, style = {} }) {
+function SafeImg({ src, alt, style = {}, className = "" }) {
   const [failed, setFailed] = useState(false)
   if (failed) return null
-  return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ display: 'block', ...style }} />
+  return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ display: 'block', ...style }} className={className} />
 }
 
 export default function ScamQuiz() {
@@ -48,31 +48,40 @@ export default function ScamQuiz() {
   const handleRestart = () => { stop(); setIndex(0); setSelected(null); setScore(0); setDone(false) }
 
   if (done) {
-    const emoji = score >= shuffled.length * 0.8 ? '🏆' : score >= shuffled.length * 0.5 ? '👍' : '💪'
-    const msg = score >= shuffled.length * 0.8 ? 'Excellent! You are great at spotting scams!'
-      : score >= shuffled.length * 0.5 ? 'Good job! Keep practising to get even better.'
+    const isExcellent = score >= shuffled.length * 0.8
+    const isGood = score >= shuffled.length * 0.5
+    const Icon = isExcellent ? Trophy : isGood ? ThumbsUp : Award
+    const msg = isExcellent
+      ? 'Excellent! You are great at spotting scams!'
+      : isGood
+      ? 'Good job! Keep practising to get even better.'
       : 'Keep practising — you will improve quickly!'
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        <ClayCard style={{ background: 'linear-gradient(135deg,rgba(167,139,250,0.15) 0%,rgba(255,255,255,0.82) 60%)' }}>
-          <div style={{ textAlign: 'center', padding: '16px 0' }}>
-            <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: GRAD.primaryBtn, margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '50px', boxShadow: SHADOWS.button, animation: 'clay-breathe 4s ease-in-out infinite' }}>{emoji}</div>
-            <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 8}px`, fontWeight: '900', color: C.foreground, marginBottom: '8px' }}>{score} / {shuffled.length}</p>
-            <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 2}px`, fontWeight: '800', color: C.accent, marginBottom: '8px' }}>
-              {score >= shuffled.length * 0.8 ? 'Excellent work!' : score >= shuffled.length * 0.5 ? 'Well done!' : 'Keep going!'}
-            </p>
-            <p style={{ fontSize: `${fontSize - 1}px`, color: C.muted, marginBottom: '24px', lineHeight: 1.6 }}>{msg}</p>
-            <div style={{ background: '#EFEBF5', borderRadius: '999px', height: '20px', overflow: 'hidden', marginBottom: '24px', boxShadow: SHADOWS.pressed }}>
-              <div style={{ width: `${pct}%`, height: '100%', borderRadius: '999px', background: pct >= 70 ? GRAD.iconGreen : pct >= 50 ? 'linear-gradient(135deg,#FCD34D,#D97706)' : 'linear-gradient(135deg,#F87171,#DC2626)', transition: 'width 1.2s cubic-bezier(0.34,1.56,0.64,1)', boxShadow: SHADOWS.button }} />
+      <div className="flex flex-col gap-6">
+        <ClayCard className="bg-gradient-to-br from-wave/10 to-white/70 text-center py-8">
+          <div className="flex flex-col items-center">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-wave to-ocean mb-5 flex items-center justify-center text-white shadow-[var(--shadow-clay-button)] animate-clay-breathe">
+              <Icon size={48} strokeWidth={2} />
             </div>
-            {/* Seniors dancing — celebratory, only shown on good score */}
-            {score >= shuffled.length * 0.5 && (
-              <div style={{ marginBottom: '24px' }}>
-                <SafeImg src="/images/illus-seniors-dancing.png" alt="Happy seniors celebrating and dancing" style={{ maxWidth: '280px', width: '100%', margin: '0 auto', objectFit: 'contain' }} />
-              </div>
-            )}
-            <ClayButton size="lg" onClick={handleRestart}>🔄 Play again</ClayButton>
+            <p className="font-heading font-black text-ink mb-2" style={{ fontSize: `${fontSize + 8}px` }}>
+              {score} / {shuffled.length}
+            </p>
+            <p className="font-heading font-extrabold text-ocean mb-2" style={{ fontSize: `${fontSize + 2}px` }}>
+              {isExcellent ? 'Excellent work!' : isGood ? 'Well done!' : 'Keep going!'}
+            </p>
+            <p className="text-muted mb-7 leading-relaxed" style={{ fontSize: `${fontSize - 1}px` }}>{msg}</p>
+            
+            {/* Score bar */}
+            <div className="bg-[#EFEBF5] rounded-full h-5 w-full max-w-md overflow-hidden mb-7 shadow-[var(--shadow-clay-pressed)]">
+              <div 
+                className={`h-full rounded-full transition-all duration-1000 ease-out shadow-[var(--shadow-clay-button)] ${pct >= 70 ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' : pct >= 50 ? 'bg-gradient-to-br from-amber-400 to-amber-600' : 'bg-gradient-to-br from-red-400 to-danger'}`}
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <ClayButton size="lg" onClick={handleRestart}>
+              Play again ↻
+            </ClayButton>
           </div>
         </ClayCard>
       </div>
@@ -80,81 +89,101 @@ export default function ScamQuiz() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className="flex flex-col gap-5">
 
-      {/* ══ HEADER — real speaker + tutor illustration ════════
-          Dr. Mujumdar (founder) with mic + tutor beside laptop
-          Sets the "learning with guidance" context             */}
-      <div style={{
-        borderRadius: RADIUS.card,
-        background: 'rgba(255,255,255,0.80)',
-        backdropFilter: 'blur(16px)',
-        boxShadow: SHADOWS.card,
-        overflow: 'hidden',
-      }}>
+      {/* ══ HEADER — Translated to Tailwind ════════════════════ */}
+      <div className="rounded-[32px] bg-white/80 backdrop-blur-md overflow-hidden" style={{ boxShadow: 'var(--shadow-clay-card)' }}>
+        
         {/* Real photo of event speaker at top */}
-        <div style={{ width: '100%', height: '80px', overflow: 'hidden', position: 'relative' }}>
+        <div className="w-full h-20 overflow-hidden relative">
           <SafeImg
             src="/images/real-event-audience.png"
             alt="Seniors attending the digital safety workshop at Symbiosis College, Pune"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%' }}
+            className="w-full h-full object-cover object-[center_40%]"
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(255,255,255,0.88) 100%)' }} />
-          <div style={{ position: 'absolute', bottom: '8px', left: '16px' }}>
-            <span style={{ fontFamily: FONT.heading, fontSize: '11px', fontWeight: '700', color: C.accent, background: 'rgba(255,255,255,0.9)', padding: '3px 10px', borderRadius: '20px' }}>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/90" />
+          <div className="absolute bottom-2 left-4">
+            <span className="font-heading text-[11px] font-bold text-ocean bg-white/90 px-2.5 py-1 rounded-full shadow-sm">
               📸 Symbiosis Digital Literacy Event — 70+ seniors attended
             </span>
           </div>
         </div>
 
-        <div style={{ padding: '16px 20px 20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
+        <div className="p-4 px-5 pb-5">
+          <div className="flex justify-between items-center flex-wrap gap-2.5 mb-3.5">
             <div>
-              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 2}px`, fontWeight: '900', color: C.foreground }}>🎯 Scam Practice Quiz</p>
-              <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, fontFamily: FONT.heading, fontWeight: '600' }}>Question {index + 1} of {shuffled.length}</p>
+              <p className="font-heading font-black text-ink" style={{ fontSize: `${fontSize + 2}px` }}>🎯 Scam Practice Quiz</p>
+              <p className="font-heading font-semibold text-muted" style={{ fontSize: `${fontSize - 3}px` }}>Question {index + 1} of {shuffled.length}</p>
             </div>
-            <div style={{ background: GRAD.primaryBtn, borderRadius: RADIUS.md, padding: '10px 18px', textAlign: 'center', boxShadow: SHADOWS.button }}>
-              <p style={{ fontSize: `${fontSize - 4}px`, color: 'rgba(255,255,255,0.85)', fontFamily: FONT.heading, fontWeight: '700' }}>Score</p>
-              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 6}px`, fontWeight: '900', color: '#fff' }}>{score}</p>
+            <div className="bg-gradient-to-br from-wave to-ocean rounded-2xl px-4 py-2.5 text-center shadow-[var(--shadow-clay-button)]">
+              <p className="font-heading font-bold text-white/85" style={{ fontSize: `${fontSize - 4}px` }}>Score</p>
+              <p className="font-heading font-black text-white" style={{ fontSize: `${fontSize + 6}px` }}>{score}</p>
             </div>
           </div>
-          <div style={{ background: '#EFEBF5', borderRadius: '999px', height: '10px', overflow: 'hidden', boxShadow: SHADOWS.pressed }}>
-            <div style={{ width: `${(index / shuffled.length) * 100}%`, height: '100%', background: GRAD.primaryBtn, borderRadius: '999px', transition: 'width 0.5s cubic-bezier(0.34,1.56,0.64,1)' }} />
+          <div className="bg-[#EFEBF5] rounded-full h-2.5 w-full overflow-hidden shadow-[var(--shadow-clay-pressed)]">
+            <div 
+              className="h-full bg-gradient-to-br from-wave to-ocean rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(index / shuffled.length) * 100}%` }}
+            />
           </div>
         </div>
       </div>
 
       {/* ══ SCENARIO CARD ════════════════════════════════════ */}
       <ClayCard>
-        <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 3}px`, fontWeight: '800', color: C.muted, marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+        <p className="font-heading font-extrabold text-muted mb-3 uppercase tracking-wide" style={{ fontSize: `${fontSize - 3}px` }}>
           Read this message carefully:
         </p>
-        <div style={{ background: '#EFEBF5', borderRadius: RADIUS.md, padding: '20px', marginBottom: '20px', boxShadow: SHADOWS.pressed }}>
-          <p style={{ fontSize: `${fontSize - 1}px`, color: C.foreground, lineHeight: 1.85, fontStyle: 'italic' }}>
+        <div className="bg-[#EFEBF5] rounded-2xl p-5 mb-5 shadow-[var(--shadow-clay-pressed)]">
+          <p className="text-ink leading-relaxed italic font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
             "{current.scenario}"
           </p>
         </div>
-        <button onClick={() => isSpeaking ? stop() : speak(current.scenario, language)}
-          style={{ background: `${C.accent}12`, border: `1.5px solid ${C.accent}30`, borderRadius: RADIUS.btn, padding: '8px 18px', fontSize: `${fontSize - 4}px`, color: C.accent, cursor: 'pointer', fontFamily: FONT.heading, fontWeight: '700', marginBottom: '20px' }}>
-          {isSpeaking ? '⏹ Stop' : '🔊 Read aloud'}
+        
+        <button
+          onClick={() => isSpeaking ? stop() : speak(current.scenario, language)}
+          className="flex items-center gap-2 bg-ocean/10 border-[1.5px] border-ocean/30 rounded-[20px] px-4 py-2 text-ocean cursor-pointer font-heading font-bold mb-5 hover:bg-ocean/20 transition-colors"
+          style={{ fontSize: `${fontSize - 4}px` }}
+        >
+          {isSpeaking ? <><Square size={14} fill="currentColor"/> Stop</> : <><Volume2 size={16} strokeWidth={2.5}/> Read aloud</>}
         </button>
-        <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize}px`, fontWeight: '800', color: C.foreground, marginBottom: '16px' }}>
+
+        <p className="font-heading font-extrabold text-ink mb-4" style={{ fontSize: `${fontSize}px` }}>
           Is this message a scam or is it safe?
         </p>
-        <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+        
+        <div className="flex gap-3 flex-wrap">
           {['SCAM', 'SAFE'].map(choice => {
             const isChosen = selected === choice
-            const isRight  = answered && choice === current.correctAnswer
-            const isWrong  = answered && choice === selected && !isCorrect
-            let bg     = choice === 'SCAM' ? 'linear-gradient(135deg,#FEE2E2,#FECACA)' : 'linear-gradient(135deg,#D1FAE5,#A7F3D0)'
-            let border = choice === 'SCAM' ? '#DC2626' : '#10B981'
-            let color  = choice === 'SCAM' ? '#991B1B' : '#065F46'
-            let icon   = choice === 'SCAM' ? '🚨' : '✅'
-            if (answered && isWrong) { bg = '#E5E7EB'; border = '#9CA3AF'; color = '#6B7280' }
+            const isRight = answered && choice === current.correctAnswer
+            const isWrong = answered && choice === selected && !isCorrect
+
+            let bg = choice === 'SCAM' ? 'bg-gradient-to-br from-red-100 to-red-200' : 'bg-gradient-to-br from-emerald-100 to-emerald-200'
+            let border = choice === 'SCAM' ? 'border-danger' : 'border-emerald-500'
+            let color = choice === 'SCAM' ? 'text-red-900' : 'text-emerald-900'
+            let Icon = choice === 'SCAM' ? AlertTriangle : CheckCircle2
+
+            if (answered && isWrong) { 
+              bg = 'bg-gray-200'; border = 'border-gray-400'; color = 'text-gray-500' 
+            }
+
             return (
-              <button key={choice} onClick={() => handleAnswer(choice)} disabled={answered}
-                style={{ flex: 1, minWidth: '120px', background: bg, border: `3px solid ${border}`, borderRadius: RADIUS.md, padding: '20px', fontSize: `${fontSize + 2}px`, fontFamily: FONT.heading, fontWeight: '900', color, cursor: answered ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', boxShadow: answered ? SHADOWS.pressed : SHADOWS.card, transition: 'all 0.2s' }}>
-                <span style={{ fontSize: '36px' }}>{icon}</span>
+              <button
+                key={choice}
+                onClick={() => handleAnswer(choice)}
+                disabled={answered}
+                className={`flex-1 min-w-[120px] border-[3px] rounded-2xl p-5 flex flex-col items-center gap-2 transition-all duration-200 outline-none
+                  ${bg} ${color} ${isRight ? border : answered && !isWrong ? border + '/40' : border + '/60'}
+                  ${answered ? 'cursor-default' : 'cursor-pointer hover:-translate-y-1 hover:shadow-[var(--shadow-clay-card-hover)]'}
+                `}
+                style={{
+                  fontSize: `${fontSize + 2}px`, 
+                  fontFamily: 'Nunito, sans-serif',
+                  fontWeight: '900',
+                  boxShadow: answered ? 'var(--shadow-clay-pressed)' : 'var(--shadow-clay-card)',
+                }}
+              >
+                <Icon size={36} strokeWidth={2.5} />
                 {choice}
               </button>
             )
@@ -164,33 +193,39 @@ export default function ScamQuiz() {
 
       {/* ══ FEEDBACK ═════════════════════════════════════════ */}
       {answered && (
-        <ClayCard style={{ background: isCorrect ? 'linear-gradient(135deg,rgba(209,250,229,0.6),rgba(255,255,255,0.82))' : 'linear-gradient(135deg,rgba(254,226,226,0.6),rgba(255,255,255,0.82))' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '16px' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: isCorrect ? 'linear-gradient(135deg,#34D399,#059669)' : 'linear-gradient(135deg,#F87171,#DC2626)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', flexShrink: 0, boxShadow: SHADOWS.button }}>
-              {isCorrect ? '✅' : '❌'}
+        <ClayCard className={isCorrect ? 'bg-gradient-to-br from-emerald-50 to-white/70' : 'bg-gradient-to-br from-red-50 to-white/70'}>
+          <div className="flex items-start gap-4">
+            <div className={`w-11 h-11 rounded-full flex items-center justify-center text-white shrink-0 shadow-[var(--shadow-clay-button)] ${isCorrect ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' : 'bg-gradient-to-br from-red-400 to-danger'}`}>
+              {isCorrect ? <CheckCircle2 size={24} strokeWidth={3} /> : <XCircle size={24} strokeWidth={3} />}
             </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize}px`, fontWeight: '900', color: isCorrect ? '#065F46' : '#7F1D1D', marginBottom: '10px' }}>
+            <div className="flex-1">
+              <p className={`font-heading font-black mb-2.5 ${isCorrect ? 'text-emerald-900' : 'text-red-900'}`} style={{ fontSize: `${fontSize}px` }}>
                 {isCorrect ? 'Correct! Well done.' : `Not quite — this was a ${current.correctAnswer}.`}
               </p>
-              <p style={{ fontSize: `${fontSize - 2}px`, color: C.muted, lineHeight: 1.75, marginBottom: current.redFlags.length > 0 ? '14px' : '0' }}>{current.explanation}</p>
+              <p className="text-muted leading-relaxed mb-3.5" style={{ fontSize: `${fontSize - 2}px` }}>
+                {current.explanation}
+              </p>
               {current.redFlags.length > 0 && (
                 <div>
-                  <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize - 3}px`, fontWeight: '800', color: C.foreground, marginBottom: '8px' }}>Red flags:</p>
+                  <p className="font-heading font-extrabold text-ink mb-2" style={{ fontSize: `${fontSize - 3}px` }}>Warning signs:</p>
                   {current.redFlags.map((f, i) => (
-                    <p key={i} style={{ fontSize: `${fontSize - 4}px`, color: '#DC2626', paddingLeft: '12px', marginBottom: '5px' }}>⚠️ {f}</p>
+                    <p key={i} className="text-danger pl-3 mb-1.5 flex items-center gap-2" style={{ fontSize: `${fontSize - 4}px` }}>
+                      <AlertTriangle size={14} /> {f}
+                    </p>
                   ))}
                 </div>
               )}
             </div>
             {/* Tutor illustration beside feedback */}
-            <div style={{ flexShrink: 0, opacity: 0.75 }}>
-              <SafeImg src="/images/illus-tutor-laptop.png" alt="A volunteer helping a senior understand technology" style={{ width: '72px', height: '80px', objectFit: 'contain' }} />
+            <div className="shrink-0 opacity-75 hidden sm:block">
+              <SafeImg src="/images/illus-tutor-laptop.png" alt="A volunteer helping a senior understand technology" className="w-[72px] h-[80px] object-contain" />
             </div>
           </div>
-          <ClayButton size="md" onClick={handleNext} fullWidth>
-            {index + 1 >= shuffled.length ? 'See my results →' : 'Next question →'}
-          </ClayButton>
+          <div className="mt-5">
+            <ClayButton size="md" onClick={handleNext} fullWidth>
+              {index + 1 >= shuffled.length ? 'See my results →' : 'Next question →'}
+            </ClayButton>
+          </div>
         </ClayCard>
       )}
     </div>

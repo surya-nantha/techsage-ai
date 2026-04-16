@@ -1,28 +1,28 @@
 import React, { useState } from 'react'
-import { C, SHADOWS, GRAD, FONT } from '../tokens.js'
+import { Mic, Square, Loader2, RotateCcw } from 'lucide-react'
 
 const STATES = {
   idle: {
-    gradient: GRAD.primaryBtn,
-    icon: '🎤',
+    gradient: 'bg-gradient-to-br from-wave to-ocean', // New theme colors!
+    Icon: Mic,
     label: 'Tap to speak',
     pulse: false,
   },
   listening: {
-    gradient: 'linear-gradient(135deg, #F87171 0%, #C00000 100%)',
-    icon: '⏹',
+    gradient: 'bg-gradient-to-br from-red-400 to-danger',
+    Icon: Square,
     label: 'Tap to stop',
     pulse: true,
   },
   processing: {
-    gradient: `linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%)`,
-    icon: '✨',
+    gradient: 'bg-gradient-to-br from-amber to-caution',
+    Icon: Loader2,
     label: 'Thinking...',
     pulse: false,
   },
   error: {
-    gradient: 'linear-gradient(135deg, #FCD34D 0%, #D97706 100%)',
-    icon: '🔁',
+    gradient: 'bg-gradient-to-br from-orange-400 to-amber',
+    Icon: RotateCcw,
     label: 'Try again',
     pulse: false,
   },
@@ -34,7 +34,7 @@ export default function MicButton({ state = 'idle', onClick, fontSize = 18 }) {
   const size = Math.max(96, fontSize * 5.2)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+    <div className="flex flex-col items-center gap-3">
       <button
         onClick={onClick}
         disabled={state === 'processing'}
@@ -45,50 +45,32 @@ export default function MicButton({ state = 'idle', onClick, fontSize = 18 }) {
         onMouseLeave={() => setPressed(false)}
         onTouchStart={() => setPressed(true)}
         onTouchEnd={() => setPressed(false)}
+        className={`
+          rounded-full border-none flex items-center justify-center outline-none text-white
+          transition-transform duration-150 ease-out
+          ${s.gradient}
+          ${state === 'processing' ? 'cursor-not-allowed' : 'cursor-pointer'}
+          ${pressed ? 'scale-90' : 'scale-100'}
+          ${s.pulse ? 'animate-[clay-pulse-ring_1.4s_ease-in-out_infinite]' : ''}
+          ${state === 'processing' ? 'animate-[clay-breathe_2s_ease-in-out_infinite]' : ''}
+        `}
         style={{
           width: `${size}px`,
           height: `${size}px`,
-          borderRadius: '50%',
-          background: s.gradient,
-          border: 'none',
-          cursor: state === 'processing' ? 'not-allowed' : 'pointer',
-          fontSize: `${Math.round(size * 0.38)}px`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          outline: 'none',
-          boxShadow: SHADOWS.button,
-          animation: s.pulse
-            ? 'clay-pulse-ring 1.4s ease-in-out infinite'
-            : state === 'processing'
-            ? 'clay-breathe 2s ease-in-out infinite'
-            : 'none',
-          transform: pressed ? 'scale(0.90)' : 'scale(1)',
-          transition: 'transform 0.15s cubic-bezier(0.34,1.56,0.64,1)',
+          boxShadow: 'var(--shadow-clay-button)',
         }}
       >
+        {/* If processing, spin the Loader icon. Otherwise, show normal icon */}
         {state === 'processing' ? (
-          <span style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-            {[0,1,2].map(i => (
-              <span key={i} style={{
-                width: '10px', height: '10px', borderRadius: '50%',
-                background: '#fff',
-                animation: `dots 1.2s ease-in-out ${i * 0.2}s infinite`,
-                display: 'inline-block',
-              }} />
-            ))}
-          </span>
+          <s.Icon className="animate-spin" size={size * 0.38} strokeWidth={2.5} />
         ) : (
-          <span role="img" aria-hidden="true">{s.icon}</span>
+          <s.Icon size={size * 0.38} strokeWidth={2.5} />
         )}
       </button>
-      <span style={{
-        fontFamily: FONT.heading,
-        fontSize: `${Math.round(fontSize * 0.82)}px`,
-        fontWeight: '800',
-        color: C.accent,
-        letterSpacing: '0.4px',
-      }}>
+      <span 
+        className="font-heading font-extrabold text-ocean tracking-wide" 
+        style={{ fontSize: `${Math.round(fontSize * 0.82)}px` }}
+      >
         {s.label}
       </span>
     </div>
