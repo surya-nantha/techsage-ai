@@ -19,9 +19,15 @@ const EXAMPLES = [
 const SAFETY_TIPS = [
   'Real banks and government agencies NEVER ask for OTPs, passwords, or gift cards',
   'If it feels urgent or scary, it is probably a scam — take your time',
-  'Call the company directly using a number from their official website',
-  'Never share your OTP, PIN, or password with anyone — ever',
+  'Call the Cyber Crime helpline 1930 if you suspect fraud',
+  'Never share your OTP, PIN, or Aadhaar number with anyone — ever',
 ]
+
+function SafeImg({ src, alt, style = {}, className = "" }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) return null
+  return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ display: 'block', ...style }} className={className} />
+}
 
 export default function ScamDetector() {
   const { fontSize, language } = useSettings()
@@ -44,26 +50,36 @@ export default function ScamDetector() {
 
       {/* Header card */}
       <ClayCard className="bg-gradient-to-br from-red-100/50 to-white/70">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-danger flex items-center justify-center text-white shrink-0 shadow-[var(--shadow-clay-button)] animate-clay-breathe">
-            <ShieldAlert size={32} strokeWidth={2.5} />
+        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-danger flex items-center justify-center text-white shrink-0 shadow-[var(--shadow-clay-button)] animate-clay-breathe">
+              <ShieldAlert size={32} strokeWidth={2.5} />
+            </div>
+            <div>
+              <p className="font-heading font-black text-red-900 mb-1.5" style={{ fontSize: `${fontSize + 3}px` }}>
+                {language === 'en' ? 'Scam Detector' : language === 'ta' ? 'மோசடி கண்டறிவி' : 'स्कैम डिटेक्टर'}
+              </p>
+              <p className="text-muted leading-relaxed" style={{ fontSize: `${fontSize - 1}px` }}>
+                {language === 'en'
+                    ? 'Got a suspicious message? Paste or speak it below and I will check if it is safe.'
+                    : language === 'ta'
+                    ? 'சந்தேகமான செய்தி வந்ததா? கீழே ஒட்டவும் அல்லது பேசவும்.'
+                    : 'कोई संदिग्ध संदेश मिला? नीचे पेस्ट करें या बोलें और मैं जाँच करूँगा।'}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="font-heading font-black text-red-900 mb-1.5" style={{ fontSize: `${fontSize + 3}px` }}>
-              {language === 'en' ? 'Scam Detector' : language === 'ta' ? 'மோசடி கண்டறிவி' : 'स्कैम डिटेक्टर'}
-            </p>
-            <p className="text-muted leading-relaxed" style={{ fontSize: `${fontSize - 1}px` }}>
-              {language === 'en'
-                  ? 'Got a suspicious message? Paste or speak it below and I will check if it is safe.'
-                  : language === 'ta'
-                  ? 'சந்தேகமான செய்தி வந்ததா? கீழே ஒட்டவும் அல்லது பேசவும்.'
-                  : 'कोई संदिग्ध संदेश मिला? नीचे पेस्ट करें या बोलें और मैं जाँच करूँगा।'}
-            </p>
+          {/* Confused-phone illustration integrated cleanly */}
+          <div className="shrink-0 -mb-2 mt-2 sm:mt-0">
+            <SafeImg
+              src="/images/illus-confused-phone.png"
+              alt="A senior citizen looking confused and concerned at a smartphone message"
+              style={{ width: '110px', height: 'auto', objectFit: 'contain' }}
+            />
           </div>
         </div>
       </ClayCard>
 
-      {/* Input card */}
+      {/* ══ INPUT CARD ════════════════════════════════════════ */}
       <ClayCard>
         <p className="font-heading font-extrabold text-ink mb-3.5" style={{ fontSize: `${fontSize - 1}px` }}>
           {language === 'en' ? 'Paste the suspicious message here:' : language === 'ta' ? 'சந்தேகமான செய்தியை ஒட்டவும்:' : 'संदिग्ध संदेश यहाँ पेस्ट करें:'}
@@ -71,11 +87,7 @@ export default function ScamDetector() {
         <ClayInput
           value={messageText}
           onChange={e => setMessageText(e.target.value)}
-          placeholder={language === 'en'
-            ? 'Paste the message text here, or tap the microphone to speak it...'
-            : language === 'ta'
-            ? 'இங்கே செய்தியை ஒட்டவும்...'
-            : 'संदेश यहाँ पेस्ट करें, या माइक से बोलें...'}
+          placeholder={language === 'hi' ? 'संदेश यहाँ पेस्ट करें...' : language === 'ta' ? 'இங்கே செய்தியை ஒட்டவும்...' : 'Paste the message text here, or tap the microphone to speak it...'}
           fontSize={fontSize - 1}
           multiline
           rows={4}
@@ -114,7 +126,7 @@ export default function ScamDetector() {
         <VerdictCard verdict={result.verdict || 'SUSPICIOUS'} redFlags={result.redFlags || []} recommendation={result.recommendation} />
       )}
 
-      {/* Example messages */}
+      {/* ══ EXAMPLE MESSAGES ═════════════════════════════════ */}
       <ClayCard>
         <p className="font-heading font-extrabold text-ink mb-3.5" style={{ fontSize: `${fontSize - 1}px` }}>
           {language === 'en' ? '🧪 Try these example messages:' : language === 'ta' ? 'இந்த உதாரண செய்திகளை முயற்சிக்கவும்:' : '🧪 इन उदाहरण संदेशों को आज़माएं:'}
@@ -127,23 +139,36 @@ export default function ScamDetector() {
         </div>
       </ClayCard>
 
-      {/* Safety tips */}
+      {/* ══ SAFETY TIPS ═════════════════════════════════════ */}
       <ClayCard className="bg-gradient-to-br from-emerald-50 to-white/70">
-        <div className="flex items-center gap-2 mb-3.5">
-          <ShieldAlert size={20} className="text-emerald-700" />
-          <p className="font-heading font-extrabold text-emerald-800" style={{ fontSize: `${fontSize - 1}px` }}>
-            {language === 'en' ? 'Golden rules for staying safe:' : language === 'ta' ? 'பாதுகாப்பிற்கான பொன் விதிகள்:' : 'सुरक्षित रहने के सुनहरे नियम:'}
-          </p>
-        </div>
-        <div className="flex flex-col gap-3">
-          {SAFETY_TIPS.map((tip, i) => (
-            <div key={i} className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shrink-0 shadow-sm mt-0.5">
-                <CheckCircle size={14} strokeWidth={3} />
-              </div>
-              <p className="text-emerald-900 leading-relaxed font-medium" style={{ fontSize: `${fontSize - 3}px` }}>{tip}</p>
+        <div className="flex flex-col sm:flex-row justify-between gap-6">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-3.5">
+              <ShieldAlert size={20} className="text-emerald-700" />
+              <p className="font-heading font-extrabold text-emerald-800" style={{ fontSize: `${fontSize - 1}px` }}>
+                {language === 'en' ? 'Golden rules for staying safe:' : language === 'ta' ? 'பாதுகாப்பிற்கான பொன் விதிகள்:' : 'सुरक्षित रहने के सुनहरे नियम:'}
+              </p>
             </div>
-          ))}
+            <div className="flex flex-col gap-3">
+              {SAFETY_TIPS.map((tip, i) => (
+                <div key={i} className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shrink-0 shadow-sm mt-0.5">
+                    <CheckCircle size={14} strokeWidth={3} />
+                  </div>
+                  <p className="text-emerald-900 leading-relaxed font-medium" style={{ fontSize: `${fontSize - 3}px` }}>{tip}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Young-helping-senior illustration integrated into Tailwind flexbox */}
+          <div className="shrink-0 self-center sm:self-end">
+            <SafeImg
+              src="/images/illus-young-helping.png"
+              alt="A young person standing beside a senior citizen, guiding them at a laptop"
+              style={{ width: '100px', height: 'auto', objectFit: 'contain' }}
+            />
+          </div>
         </div>
       </ClayCard>
     </div>

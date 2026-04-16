@@ -8,18 +8,16 @@ import tutorials from '../data/tutorials.json'
 
 const TUTORIAL_ICONS = { email: Mail, videocall: Video, wifi: Wifi, photos: ImageIcon, ai: Bot, passwords: Lock, privacy: Shield }
 
-// Fixed the missing Amber!
 const CARD_GRADIENTS = [ 
   'bg-gradient-to-br from-blue-400 to-blue-600', 
   'bg-gradient-to-br from-purple-400 to-purple-600', 
   'bg-gradient-to-br from-pink-400 to-pink-600', 
   'bg-gradient-to-br from-wave to-ocean', 
-  'bg-amber', // Fixed!
+  'bg-amber', 
   'bg-gradient-to-br from-sky-400 to-sky-600' 
 ]
 const CARD_BG_TINTS = [ 'bg-gradient-to-br from-blue-100/40 to-white/70', 'bg-gradient-to-br from-purple-100/40 to-white/70', 'bg-gradient-to-br from-pink-100/40 to-white/70', 'bg-gradient-to-br from-wave/10 to-white/70', 'bg-orange-50', 'bg-gradient-to-br from-sky-100/40 to-white/70' ]
 
-// NO MORE GREEN! Wave/Ocean for Beginner, Amber for Intermediate
 const DIFFICULTY_CONFIG = { 
   Beginner: { bg: 'bg-gradient-to-br from-wave to-ocean', label: 'Beginner' }, 
   Intermediate: { bg: 'bg-amber', label: 'Intermediate' } 
@@ -27,7 +25,14 @@ const DIFFICULTY_CONFIG = {
 
 const TUTORIAL_IMAGES = { email: '/img-email.png', videocall: '/img-video-call.png', wifi: '/img-wifi.png', photos: '/img-photo-sharing.png', ai: '/img-ai-assistant.png', passwords: '/img-password.png', privacy: '/img-online-safety.png' }
 
-// ─── Tutorial step viewer ─────────────────────────────────────────
+// Added the missing SafeImg component back!
+function SafeImg({ src, alt, style = {}, className = "" }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) return null
+  return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ display: 'block', ...style }} className={className} />
+}
+
+// ─── Step viewer ──────────────────────────────────────────────────
 function TutorialViewer({ tutorial, colorIdx, onBack }) {
   const { fontSize, language } = useSettings()
   const { speak, stop, isSpeaking } = useSpeechSynthesis()
@@ -40,8 +45,8 @@ function TutorialViewer({ tutorial, colorIdx, onBack }) {
   const Icon = TUTORIAL_ICONS[tutorial.id] || BookOpen
 
   const goTo = (i) => { stop(); setStep(i) }
-  const prev = () => goTo(Math.max(step - 1, 0))
   const next = () => { stop(); step < total - 1 ? setStep(step + 1) : onBack() }
+  const prev = () => { stop(); setStep(Math.max(step - 1, 0)) }
 
   return (
     <div className="flex flex-col gap-5">
@@ -63,7 +68,6 @@ function TutorialViewer({ tutorial, colorIdx, onBack }) {
             </p>
             {TUTORIAL_IMAGES[tutorial.id] && (
               <div className="mt-5 rounded-2xl overflow-hidden bg-white/70 p-3 shadow-[var(--shadow-clay-pressed)] border border-ocean/10">
-                {/* Fixed the image cropping! */}
                 <img
                   src={TUTORIAL_IMAGES[tutorial.id]}
                   alt={tutorial.title}
@@ -118,8 +122,10 @@ function TutorialViewer({ tutorial, colorIdx, onBack }) {
 // ─── Tutorials grid ───────────────────────────────────────────────
 export default function Tutorials() {
   const { fontSize, language } = useSettings()
-  const [selected, setSelected]   = useState(null)
-  const [colorIdx, setColorIdx]   = useState(0)
+  const [selected, setSelected] = useState(null)
+  
+  // Restored the missing colorIdx state!
+  const [colorIdx, setColorIdx] = useState(0)
   const [hoveredIdx, setHoveredIdx] = useState(null)
   
   if (selected !== null) { return <TutorialViewer tutorial={tutorials[selected]} colorIdx={colorIdx} onBack={() => setSelected(null)} /> }
@@ -127,13 +133,23 @@ export default function Tutorials() {
   return (
     <div className="flex flex-col gap-6">
       <ClayCard className="bg-gradient-to-br from-purple-100/50 to-white/70">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-wave to-ocean shrink-0 flex items-center justify-center text-white shadow-[var(--shadow-clay-button)] animate-clay-breathe">
-            <BookOpen size={30} strokeWidth={2.5} />
+        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-wave to-ocean shrink-0 flex items-center justify-center text-white shadow-[var(--shadow-clay-button)] animate-clay-breathe">
+              <BookOpen size={30} strokeWidth={2.5} />
+            </div>
+            <div>
+              <p className="font-heading font-black text-ocean mb-1.5" style={{ fontSize: `${fontSize + 3}px` }}>{language === 'en' ? 'Step-by-Step Tutorials' : 'படிப்படியான பாடங்கள்'}</p>
+              <p className="text-muted leading-relaxed" style={{ fontSize: `${fontSize - 1}px` }}>{language === 'en' ? 'Pick any topic and learn at your own pace.' : 'எந்த தலைப்பையும் தேர்ந்தெடுங்கள்.'}</p>
+            </div>
           </div>
-          <div>
-            <p className="font-heading font-black text-ocean mb-1.5" style={{ fontSize: `${fontSize + 3}px` }}>{language === 'en' ? 'Step-by-Step Tutorials' : 'படிப்படியான பாடங்கள்'}</p>
-            <p className="text-muted leading-relaxed" style={{ fontSize: `${fontSize - 1}px` }}>{language === 'en' ? 'Pick any topic and learn at your own pace.' : 'எந்த தலைப்பையும் தேர்ந்தெடுங்கள்.'}</p>
+          {/* Couple-tablet illustration integrated safely */}
+          <div className="shrink-0 -mb-2 mt-2 sm:mt-0">
+            <SafeImg
+              src="/images/illus-couple-tablet.png"
+              alt="An elderly couple sitting together looking at a tablet computer"
+              style={{ width: '130px', height: 'auto', objectFit: 'contain' }}
+            />
           </div>
         </div>
       </ClayCard>

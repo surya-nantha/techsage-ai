@@ -8,6 +8,12 @@ import scenarios from '../data/quizScenarios.json'
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5) }
 
+function SafeImg({ src, alt, style = {} }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) return null
+  return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ display: 'block', ...style }} />
+}
+
 export default function ScamQuiz() {
   const { fontSize, language } = useSettings()
   const { speak, stop, isSpeaking } = useSpeechSynthesis()
@@ -111,7 +117,49 @@ export default function ScamQuiz() {
         </div>
       </ClayCard>
 
-      {/* Scenario */}
+      {/* ══ HEADER — real speaker + tutor illustration ════════
+          Dr. Mujumdar (founder) with mic + tutor beside laptop
+          Sets the "learning with guidance" context             */}
+      <div style={{
+        borderRadius: RADIUS.card,
+        background: 'rgba(255,255,255,0.80)',
+        backdropFilter: 'blur(16px)',
+        boxShadow: SHADOWS.card,
+        overflow: 'hidden',
+      }}>
+        {/* Real photo of event speaker at top */}
+        <div style={{ width: '100%', height: '80px', overflow: 'hidden', position: 'relative' }}>
+          <SafeImg
+            src="/images/real-event-audience.png"
+            alt="Seniors attending the digital safety workshop at Symbiosis College, Pune"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%' }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(255,255,255,0.88) 100%)' }} />
+          <div style={{ position: 'absolute', bottom: '8px', left: '16px' }}>
+            <span style={{ fontFamily: FONT.heading, fontSize: '11px', fontWeight: '700', color: C.accent, background: 'rgba(255,255,255,0.9)', padding: '3px 10px', borderRadius: '20px' }}>
+              📸 Symbiosis Digital Literacy Event — 70+ seniors attended
+            </span>
+          </div>
+        </div>
+
+        <div style={{ padding: '16px 20px 20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
+            <div>
+              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 2}px`, fontWeight: '900', color: C.foreground }}>🎯 Scam Practice Quiz</p>
+              <p style={{ fontSize: `${fontSize - 3}px`, color: C.muted, fontFamily: FONT.heading, fontWeight: '600' }}>Question {index + 1} of {shuffled.length}</p>
+            </div>
+            <div style={{ background: GRAD.primaryBtn, borderRadius: RADIUS.md, padding: '10px 18px', textAlign: 'center', boxShadow: SHADOWS.button }}>
+              <p style={{ fontSize: `${fontSize - 4}px`, color: 'rgba(255,255,255,0.85)', fontFamily: FONT.heading, fontWeight: '700' }}>Score</p>
+              <p style={{ fontFamily: FONT.heading, fontSize: `${fontSize + 6}px`, fontWeight: '900', color: '#fff' }}>{score}</p>
+            </div>
+          </div>
+          <div style={{ background: '#EFEBF5', borderRadius: '999px', height: '10px', overflow: 'hidden', boxShadow: SHADOWS.pressed }}>
+            <div style={{ width: `${(index / shuffled.length) * 100}%`, height: '100%', background: GRAD.primaryBtn, borderRadius: '999px', transition: 'width 0.5s cubic-bezier(0.34,1.56,0.64,1)' }} />
+          </div>
+        </div>
+      </div>
+
+      {/* ══ SCENARIO CARD ════════════════════════════════════ */}
       <ClayCard>
         <p className="font-heading font-extrabold text-muted mb-3 uppercase tracking-wide" style={{ fontSize: `${fontSize - 3}px` }}>
           Read this message carefully:
@@ -173,7 +221,7 @@ export default function ScamQuiz() {
         </div>
       </ClayCard>
 
-      {/* Feedback */}
+      {/* ══ FEEDBACK ═════════════════════════════════════════ */}
       {answered && (
         <ClayCard className={isCorrect ? 'bg-gradient-to-br from-emerald-50 to-white/70' : 'bg-gradient-to-br from-red-50 to-white/70'}>
           <div className="flex items-start gap-4">
@@ -197,6 +245,10 @@ export default function ScamQuiz() {
                   ))}
                 </div>
               )}
+            </div>
+            {/* Tutor illustration beside feedback */}
+            <div style={{ flexShrink: 0, opacity: 0.75 }}>
+              <SafeImg src="/images/illus-tutor-laptop.png" alt="A volunteer helping a senior understand technology" style={{ width: '72px', height: '80px', objectFit: 'contain' }} />
             </div>
           </div>
           <div className="mt-5">
